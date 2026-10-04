@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>täglichbrot Gastroratgeber – Wissensblätter Küchenhygiene</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Archivo+Narrow:wght@500;600;700&display=swap">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--paper:#FFFDF8;--ink:#1B1B1B;--muted:#4A4A4A;--rule:#D9D3C7;--on:#FFFFFF;
+--c1:#B23A1E;--t1:#FBEFEA;--c2:#2E6B3F;--t2:#EAF2EA;--c3:#1F4F7A;--t3:#E8EFF6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#17181A;--ink:#ECE9E3;--muted:#B5B0A7;--rule:#3A3C40;--on:#141414;
+--c1:#F08A6E;--t1:#2A1D19;--c2:#7CC48E;--t2:#1A251D;--c3:#7DB3E3;--t3:#18212B}}
+:root[data-theme="dark"]{--paper:#17181A;--ink:#ECE9E3;--muted:#B5B0A7;--rule:#3A3C40;--on:#141414;--c1:#F08A6E;--t1:#2A1D19;--c2:#7CC48E;--t2:#1A251D;--c3:#7DB3E3;--t3:#18212B}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Source Serif 4',Georgia,'Times New Roman',serif;font-size:1.0625rem;line-height:1.65;--a:var(--c1);--tint:var(--t1)}
+body[data-t="produkthygiene"]{--a:var(--c2);--tint:var(--t2)}
+body[data-t="betriebshygiene"]{--a:var(--c3);--tint:var(--t3)}
+.wrap{max-width:46rem;margin:0 auto;padding:0 1.25rem}
+.mast{border-bottom:2px solid var(--ink);padding:1.4rem 0 .8rem;display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+.logo{font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:clamp(2rem,8vw,2.8rem);line-height:1;letter-spacing:-.02em}
+.logo span{color:var(--a);transition:color .2s}
+.label{font-family:'Archivo Narrow','Arial Narrow',sans-serif;font-weight:600;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.45;text-align:right}
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--rule)}
+.tabs .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;padding-top:.6rem;padding-bottom:.6rem}
+[role=tab]{min-height:48px;border:1.5px solid var(--rule);background:transparent;color:var(--ink);border-radius:.5rem;padding:.45rem .5rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:.1rem;font:inherit}
+[role=tab] .n{font-family:'Archivo Narrow','Arial Narrow',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+[role=tab] .t{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(.88rem,3.4vw,1.05rem);line-height:1.15}
+[role=tab]#tab-personalhygiene{--ta:var(--c1)}[role=tab]#tab-produkthygiene{--ta:var(--c2)}[role=tab]#tab-betriebshygiene{--ta:var(--c3)}
+[role=tab]:hover{border-color:var(--ta)}
+[role=tab][aria-selected=true]{background:var(--ta);border-color:var(--ta);color:var(--on)}
+[role=tab][aria-selected=true] .n{color:var(--on)}
+[role=tab]:focus-visible{outline:3px solid var(--ta);outline-offset:2px}
+section{padding:2.2rem 0 3rem}
+.kicker{display:flex;align-items:center;gap:.7rem;font-family:'Archivo Narrow','Arial Narrow',sans-serif;font-weight:700;font-size:.85rem;letter-spacing:.16em;text-transform:uppercase;color:var(--a)}
+.pill{background:var(--a);color:var(--on);padding:.2rem .6rem}
+h2{font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:clamp(2.1rem,8vw,3.4rem);line-height:1.05;letter-spacing:-.02em;margin:.8rem 0 0;text-wrap:balance}
+.bar{width:64px;height:4px;background:var(--a);margin:1.4rem 0 1.6rem}
+h3{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.45rem;line-height:1.2;color:var(--a);margin:2.2rem 0 .5rem;text-wrap:balance}
+p{margin:0 0 1rem;text-wrap:pretty;hyphens:auto}
+section>p:first-of-type{font-size:1.25rem;font-style:italic;line-height:1.5;color:var(--muted)}
+section>p:nth-of-type(2)::first-letter{float:left;font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:4.2rem;line-height:.8;padding:.35rem .5rem 0 0;color:var(--a)}
+.pull{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-weight:600;font-size:1.5rem;text-align:center;border-top:2px solid var(--a);border-bottom:2px solid var(--a);padding:.9rem 0;margin:1.4rem 0}
+.steps{list-style:none;margin:0 0 1.2rem;padding:1.1rem 1.2rem;background:var(--tint);border-top:4px solid var(--a);display:grid;gap:.7rem;counter-reset:s}
+.steps li{counter-increment:s;display:flex;gap:.85rem;align-items:baseline}
+.steps li::before{content:counter(s);flex-shrink:0;font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:1.6rem;line-height:1;color:var(--a);min-width:1.2rem}
+.steps.q{grid-template-columns:repeat(auto-fit,minmax(9.5rem,1fr))}
+.steps.q li::before{content:"?"}
+.merke{margin-top:2.6rem;background:var(--a);color:var(--on);padding:1.3rem 1.4rem;display:flex;gap:1.1rem;align-items:baseline;flex-wrap:wrap}
+.merke b{font-family:'Archivo Narrow','Arial Narrow',sans-serif;font-size:.85rem;letter-spacing:.16em;text-transform:uppercase}
+.merke p{margin:0;flex:1 1 16rem;font-family:'Playfair Display',Georgia,serif;font-style:italic;font-weight:600;font-size:1.25rem;line-height:1.4}
+footer{border-top:1px solid var(--rule);padding:1rem 0 2rem;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-family:'Archivo Narrow','Arial Narrow',sans-serif;font-weight:600;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+</style>
+</head>
+<body data-t="personalhygiene">
+<header class="wrap mast">
+<div class="logo">täglich<span>brot</span></div>
+<div class="label">Gastroratgeber<br>Serie Küchenhygiene</div>
+</header>
+<nav class="tabs" aria-label="Wissensblätter"><div class="wrap" role="tablist"><button type="button" role="tab" id="tab-personalhygiene" aria-controls="personalhygiene" aria-selected="true" data-t="personalhygiene"><span class="n">Teil 1</span><span class="t">Personalhygiene</span></button><button type="button" role="tab" id="tab-produkthygiene" aria-controls="produkthygiene" aria-selected="false" data-t="produkthygiene"><span class="n">Teil 2</span><span class="t">Produkthygiene</span></button><button type="button" role="tab" id="tab-betriebshygiene" aria-controls="betriebshygiene" aria-selected="false" data-t="betriebshygiene"><span class="n">Teil 3</span><span class="t">Betriebshygiene</span></button></div></nav>
+<main class="wrap">
+<section role="tabpanel" id="personalhygiene" aria-labelledby="tab-personalhygiene" data-t="personalhygiene">
+<div class="kicker"><span class="pill">Wissensblatt 1</span><span>Personalhygiene</span></div>
+<h2>Sauber arbeiten beginnt bei dir</h2>
+<div class="bar"></div>
+<p>Wer in einer Küche arbeitet, trägt eine besondere Verantwortung. Lebensmittel kommen während der Zubereitung immer wieder mit Menschen in Kontakt. Über Hände, Kleidung, Haare oder persönliche Gegenstände können dabei Krankheitserreger und Verunreinigungen auf Lebensmittel übertragen werden.</p>
+<p>Unter <strong>Personalhygiene</strong> versteht man deshalb alle Maßnahmen, mit denen Mitarbeitende ihren Körper und ihre Kleidung sauber halten und verhindern, dass sie selbst zur Quelle von Verunreinigungen werden. Sie ist eine wichtige Voraussetzung für sicheres Arbeiten mit Lebensmitteln.</p>
+<h3>Hände – das wichtigste Werkzeug</h3>
+<p>Die Hände kommen während eines Arbeitstages mit vielen unterschiedlichen Dingen in Berührung. Deshalb müssen sie regelmäßig und gründlich gewaschen werden. Das gilt besonders vor Arbeitsbeginn, nach Pausen, nach dem Toilettengang, nach dem Kontakt mit rohem Fleisch, Geflügel, Fisch oder Ei sowie nach dem Umgang mit Abfällen und Verpackungen. Auch nach dem Naseputzen, Husten oder Niesen und nach dem Berühren von Haaren oder Gesicht ist Händewaschen notwendig.</p>
+<p>Besonders wichtig ist der Wechsel von einer unreinen Tätigkeit zu einer reinen Tätigkeit. Wer beispielsweise zuerst rohes Geflügel vorbereitet und anschließend einen fertigen Salat anrichtet, muss sich dazwischen gründlich die Hände waschen.</p>
+<p>So geht richtiges Händewaschen:</p>
+<ol class="steps"><li><span>Hände mit Wasser anfeuchten</span></li><li><span>Flüssigseife verwenden</span></li><li><span>Mindestens 20 bis 30 Sekunden gründlich einreiben – Handrücken, Fingerzwischenräume, Daumen, Fingerkuppen und Nägel nicht vergessen</span></li><li><span>Seife abspülen und mit einem Einmalhandtuch vollständig trocknen</span></li></ol>
+<p>Das Handwaschbecken ist ausschließlich zum Händewaschen bestimmt. Lebensmittel, Geschirr oder Reinigungstücher dürfen darin nicht gewaschen werden.</p>
+<h3>Arbeitskleidung, Körper und persönliche Gegenstände</h3>
+<p>Saubere Arbeitskleidung gehört zur Personalhygiene. Verschmutzte Kleidung kann Keime und Verunreinigungen auf Lebensmittel übertragen. Arbeitskleidung muss deshalb regelmäßig gewechselt werden. Auch eine saubere Schürze gehört zur Küchenausstattung.</p>
+<p>Haare müssen so getragen werden, dass sie nicht in Lebensmittel gelangen können. Lange Haare werden zusammengebunden; je nach Betrieb wird zusätzlich eine Kopfbedeckung getragen. Fingernägel sollen kurz und sauber sein.</p>
+<p>Ringe, Armbänder und Uhren haben bei der Lebensmittelzubereitung nichts zu suchen. Unter ihnen können sich Schmutz und Keime sammeln. Außerdem besteht die Gefahr, dass Teile davon in Lebensmittel gelangen. Auch private Gegenstände wie das Smartphone sollten nicht unnötig im Arbeitsbereich benutzt werden.</p>
+<h3>Wenn man krank ist</h3>
+<p>Wer krank zur Arbeit kommt, kann nicht nur Kolleginnen und Kollegen, sondern auch Gäste gefährden. Besonders ernst zu nehmen sind beispielsweise Durchfall, Erbrechen, Gelbsucht und bestimmte ansteckende Hauterkrankungen. Solche Beschwerden müssen sofort einer vorgesetzten Person gemeldet werden. Betroffene dürfen nicht einfach weiter mit Lebensmitteln arbeiten.</p>
+<p>Auch offene Wunden müssen fachgerecht versorgt und sicher abgedeckt werden.</p>
+<p>Wer beruflich mit bestimmten Lebensmitteln arbeitet, benötigt außerdem eine Belehrung nach § 43 Infektionsschutzgesetz (IfSG). Die Erstbelehrung erfolgt vor Aufnahme der Tätigkeit. Danach muss die Tätigkeit innerhalb von drei Monaten aufgenommen werden. Im Betrieb finden anschließend regelmäßig Folgebelehrungen statt.</p>
+<h3>Personalhygiene und HACCP</h3>
+<p>Personalhygiene gehört zur guten Hygienepraxis eines Betriebes. Sie bildet damit eine wichtige Grundlage für das HACCP-Konzept. Denn auch das beste Kontrollsystem hilft wenig, wenn Mitarbeitende Krankheitserreger über Hände, Kleidung oder falsches Verhalten auf Lebensmittel übertragen.</p>
+<aside class="merke"><b>Merke</b><p>Saubere Hände, saubere Kleidung und verantwortungsvolles Verhalten schützen die Lebensmittel, die Gäste und auch die Mitarbeitenden.</p></aside>
+</section><section role="tabpanel" id="produkthygiene" aria-labelledby="tab-produkthygiene" data-t="produkthygiene" hidden>
+<div class="kicker"><span class="pill">Wissensblatt 2</span><span>Produkthygiene</span></div>
+<h2>Sicher vom Wareneingang bis zum Gast</h2>
+<div class="bar"></div>
+<p>Ein Lebensmittel durchläuft in einer Küche viele Stationen. Es wird angeliefert, gelagert, vorbereitet, verarbeitet und schließlich an den Gast ausgegeben. An jeder dieser Stellen können Lebensmittel verunreinigt werden oder verderben.</p>
+<p>Unter <strong>Produkthygiene</strong> versteht man deshalb alle Maßnahmen, die Lebensmittel während ihrer gesamten Produktionskette vor Verunreinigungen und Krankheitserregern schützen.</p>
+<h3>Schon bei der Lieferung beginnt die Kontrolle</h3>
+<p>Hygiene beginnt nicht erst am Herd. Bereits beim Wareneingang muss kontrolliert werden, ob die gelieferten Lebensmittel in Ordnung sind. Dazu gehören beispielsweise der Zustand und die Sauberkeit der Ware sowie unbeschädigte Verpackungen. Auffällige oder offensichtlich verdorbene Lebensmittel dürfen nicht einfach angenommen und verarbeitet werden.</p>
+<p>Besonders bei kühlpflichtigen Lebensmitteln ist darauf zu achten, dass die Kühlkette nicht unnötig unterbrochen wird. Nach der Warenannahme müssen die Lebensmittel deshalb möglichst schnell an ihren vorgesehenen Lagerort gebracht werden.</p>
+<h3>Richtig lagern und voneinander trennen</h3>
+<p>Nicht jedes Lebensmittel kann gleich gelagert werden. Trockene Lebensmittel benötigen andere Bedingungen als gekühlte oder tiefgekühlte Produkte. Entscheidend ist, dass die jeweils vorgeschriebenen beziehungsweise betrieblich festgelegten Lagerbedingungen eingehalten werden.</p>
+<p>Besonders wichtig ist außerdem die Trennung von rohen und verzehrfertigen Lebensmitteln. Rohes Geflügel darf beispielsweise nicht mit einem bereits fertigen Salat in Berührung kommen.</p>
+<p>Werden Krankheitserreger von einem Lebensmittel, einer Hand oder einem Arbeitsmittel auf ein anderes Lebensmittel übertragen, spricht man von einer <strong>Kreuzkontamination</strong>. Sie kann zum Beispiel über Hände, Messer, Schneidebretter oder Arbeitsflächen erfolgen.</p>
+<h3>Sauber vorbereiten und zubereiten</h3>
+<p>Während der Zubereitung müssen Hände, Geräte und Arbeitsflächen sauber sein. Ein Messer, mit dem gerade rohes Fleisch geschnitten wurde, darf nicht ungeprüft anschließend für ein verzehrfertiges Lebensmittel verwendet werden.</p>
+<p>Auch für das Waschen von Lebensmitteln gibt es vorgesehene Arbeitsbereiche. Gemüse oder Salat gehören beispielsweise nicht in das Handwaschbecken.</p>
+<p>Besondere Aufmerksamkeit benötigen leicht verderbliche Lebensmittel. Dazu gehören unter anderem rohes Fleisch und Geflügel, Fisch, Eier und daraus hergestellte Speisen. Bei ihnen können sich Mikroorganismen unter ungünstigen Bedingungen besonders gut vermehren.</p>
+<h3>Temperatur spielt eine wichtige Rolle</h3>
+<p>Viele Mikroorganismen vermehren sich besonders gut, wenn Lebensmittel längere Zeit bei für sie günstigen Temperaturen aufbewahrt werden. Deshalb müssen kühlpflichtige Lebensmittel zuverlässig gekühlt werden.</p>
+<p>Beim Garen muss eine Speise ausreichend erhitzt werden. Soll ein gegartes Lebensmittel später verwendet werden, muss es kontrolliert und möglichst zügig abgekühlt werden. Auch beim Warmhalten und erneuten Erhitzen gelten die jeweiligen betrieblichen Vorgaben.</p>
+<p>Die Temperatur eines Lebensmittels kann deshalb an verschiedenen Stellen der Produktionskette ein wichtiger Kontrollpunkt sein.</p>
+<h3>Auch nach dem Kochen ist Hygiene wichtig</h3>
+<p>Mit dem Ende der Zubereitung ist die Produkthygiene noch nicht abgeschlossen. Fertige Speisen müssen auch bei der Ausgabe und beim Transport vor Verunreinigungen geschützt werden.</p>
+<p>Dazu gehören beispielsweise saubere Behälter, geeignete Abdeckungen und die Einhaltung notwendiger Temperaturen. Die Speise soll den Gast schließlich genauso sicher erreichen, wie sie die Küche verlassen hat.</p>
+<h3>Produkthygiene und HACCP</h3>
+<p>Beim HACCP-Konzept untersucht ein Betrieb, an welchen Stellen Gefahren für Lebensmittel entstehen können. Anschließend werden wichtige Kontrollpunkte festgelegt und überwacht.</p>
+<p>Bei einem kühlpflichtigen Lebensmittel könnte beispielsweise eine zu hohe Temperatur eine Gefahr darstellen. Der Betrieb legt deshalb fest, welche Temperatur eingehalten werden muss, wann sie kontrolliert wird und wer dafür verantwortlich ist. Das Ergebnis der Kontrolle wird dokumentiert.</p>
+<p>Vereinfacht bedeutet HACCP:</p>
+<ol class="steps"><li><span>Gefahr erkennen</span></li><li><span>Kritischen Punkt festlegen</span></li><li><span>Prüfen und überwachen</span></li><li><span>Dokumentieren</span></li></ol>
+<aside class="merke"><b>Merke</b><p>Produkthygiene begleitet ein Lebensmittel auf seinem gesamten Weg – von der Anlieferung bis zum Gast.</p></aside>
+</section><section role="tabpanel" id="betriebshygiene" aria-labelledby="tab-betriebshygiene" data-t="betriebshygiene" hidden>
+<div class="kicker"><span class="pill">Wissensblatt 3</span><span>Betriebshygiene</span></div>
+<h2>Eine saubere Küche entsteht nicht von selbst</h2>
+<div class="bar"></div>
+<p>In einer professionellen Küche reicht es nicht aus, wenn Lebensmittel und Mitarbeitende hygienisch arbeiten. Auch die Umgebung muss sauber und funktionsfähig sein.</p>
+<p>Unter <strong>Betriebshygiene</strong> versteht man alle Maßnahmen zur Reinigung, Ordnung und Instandhaltung von Räumen, Arbeitsflächen, Geräten und Arbeitsmitteln. Dadurch soll verhindert werden, dass Keime, Schmutz oder Fremdkörper auf Lebensmittel gelangen.</p>
+<h3>Reinigen und Desinfizieren sind nicht dasselbe</h3>
+<p>Beim <strong>Reinigen</strong> werden sichtbarer Schmutz, Fett und Speisereste entfernt. Eine verschmutzte Arbeitsfläche muss deshalb zunächst gründlich gereinigt werden.</p>
+<p>Beim <strong>Desinfizieren</strong> werden anschließend Mikroorganismen reduziert beziehungsweise abgetötet, die mit bloßem Auge nicht sichtbar sind. Die richtige Reihenfolge lautet deshalb:</p>
+<p class="pull">Erst reinigen – dann desinfizieren.</p>
+<p>Auf einer schmutzigen Oberfläche kann ein Desinfektionsmittel nicht zuverlässig wirken. Schmutz und Speisereste können die darunterliegenden Keime schützen.</p>
+<p>Auch die richtige Dosierung und Einwirkzeit sind entscheidend. Dabei müssen die Angaben des Herstellers beachtet werden. Wird ein Desinfektionsmittel beispielsweise sofort wieder abgewischt, kann es seine Wirkung möglicherweise nicht vollständig entfalten.</p>
+<h3>Räume und Arbeitsbereiche</h3>
+<p>Küche, Lager, Kühlräume und andere Lebensmittelbereiche müssen sauber und ordentlich gehalten werden. Verschüttete Lebensmittel und Flüssigkeiten werden zeitnah beseitigt. Arbeitsflächen werden passend zu ihrer Nutzung regelmäßig gereinigt.</p>
+<p>Auch der Zustand der Räume spielt eine Rolle. Beschädigte Oberflächen, defekte Griffe oder andere Mängel müssen gemeldet werden. Schäden können die Reinigung erschweren und dadurch zu einem Hygienerisiko werden.</p>
+<p>Eine gute Betriebshygiene bedeutet deshalb nicht nur putzen, sondern auch Ordnung halten und Schäden beseitigen.</p>
+<h3>Geräte und Arbeitsmittel</h3>
+<p>Messer, Schneidebretter, Maschinen und andere Arbeitsmittel kommen unmittelbar oder mittelbar mit Lebensmitteln in Kontakt. Sie müssen deshalb regelmäßig und fachgerecht gereinigt werden.</p>
+<p>Maschinen werden – soweit dies vorgesehen ist – nach Gebrauch zerlegt, damit auch schwer erreichbare Stellen gereinigt werden können. Saubere und verschmutzte Arbeitsmittel dürfen nicht unnötig miteinander vermischt werden.</p>
+<p>Defekte oder beschädigte Geräte werden nicht einfach weiterbenutzt. Schäden müssen gemeldet und behoben werden.</p>
+<h3>Abfälle richtig entsorgen</h3>
+<p>Lebensmittelreste und andere Abfälle können Keime und Schädlinge anziehen. Abfälle werden deshalb regelmäßig aus den Lebensmittelbereichen entfernt und in geeigneten Behältern gesammelt.</p>
+<p>Auch die Abfallbehälter selbst müssen sauber gehalten werden. Sie dürfen nicht zu einer Quelle für Gerüche, Schädlinge oder Krankheitserreger werden.</p>
+<h3>Wasser und Lüftung</h3>
+<p>Für die Herstellung von Lebensmitteln und die Reinigung muss geeignetes Wasser zur Verfügung stehen. Sauberes Wasser ist deshalb eine grundlegende Voraussetzung für einen hygienischen Küchenbetrieb.</p>
+<p>Auch eine funktionierende Lüftung trägt zur Betriebshygiene bei. Beim Kochen entstehen Wärme, Dampf und Feuchtigkeit. Eine geeignete Lüftung hilft dabei, diese aus den Arbeitsbereichen abzuführen und ein hygienisches Arbeitsumfeld zu erhalten.</p>
+<h3>Kontrolle statt Zufall</h3>
+<p>Reinigung sollte in einem professionellen Betrieb nicht davon abhängen, wer gerade Zeit hat. Deshalb kann in einem Reinigungsplan beispielsweise festgelegt werden:</p>
+<ol class="steps q"><li><span>Was wird gereinigt?</span></li><li><span>Wie wird gereinigt?</span></li><li><span>Wann wird gereinigt?</span></li><li><span>Wer ist verantwortlich?</span></li></ol>
+<p>Durch Kontrolllisten und Dokumentationen kann der Betrieb anschließend nachweisen, dass die vorgesehenen Maßnahmen durchgeführt wurden.</p>
+<p>Diese Kontrollen stehen auch in Verbindung mit dem HACCP-Konzept. HACCP ist ein System zur betrieblichen Eigenkontrolle. Gefahren werden erkannt, wichtige Kontrollpunkte festgelegt, überwacht und die Ergebnisse dokumentiert.</p>
+<p>Eine funktionierende Betriebshygiene gehört dabei zur guten Hygienepraxis und bildet die Grundlage für HACCP. Ein ausgefülltes Kontrollblatt allein macht eine schmutzige Küche schließlich nicht hygienisch.</p>
+<aside class="merke"><b>Merke</b><p>Betriebshygiene bedeutet nicht einfach „putzen“. Sie umfasst Reinigung, Desinfektion, Ordnung, Instandhaltung und regelmäßige Kontrolle.</p></aside>
+</section>
+</main>
+<footer class="wrap"><span>täglichbrot</span><span>Gastroratgeber · Hygiene in der Küche</span></footer>
+<script>
+(function(){
+var tabs=[].slice.call(document.querySelectorAll('[role=tab]'));
+function show(id,push){
+  if(!document.getElementById(id))return;
+  tabs.forEach(function(t){var on=t.dataset.t===id;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;document.getElementById(t.dataset.t).hidden=!on;});
+  document.body.dataset.t=id;
+  if(push){try{history.replaceState(null,'','#'+id);}catch(e){} window.scrollTo(0,0);}
+}
+tabs.forEach(function(t,i){
+  t.addEventListener('click',function(){show(t.dataset.t,true);});
+  t.addEventListener('keydown',function(e){var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!d)return;var n=tabs[(i+d+tabs.length)%tabs.length];n.focus();show(n.dataset.t,true);});
+});
+var h=(location.hash||'').slice(1);
+if(h)show(h,false);
+window.addEventListener('hashchange',function(){show(location.hash.slice(1),false);});
+})();
+</script>
+</body>
+</html>
