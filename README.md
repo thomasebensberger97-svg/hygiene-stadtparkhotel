@@ -1,2 +1,0 @@
-# hygiene-stadtparkhotel
-Betriebsorganisation_Lernfeld1_LS3_Hygiene
