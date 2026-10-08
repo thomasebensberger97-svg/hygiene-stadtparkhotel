@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WiSo-Prüfungstrainer Gastgewerbe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   GESTALTUNG: angelehnt an einen IHK-Lösungsbogen
+   (Kennziffern-Kästchen in Formular-Grün, Eintragungen in Kugelschreiber-Blau)
+   ========================================================= */
+:root{
+  --paper:#F2F6F4; --card:#FFFFFF; --ink:#16242D; --muted:#56666E;
+  --form:#2A7666; --form-soft:#DCEBE6; --pen:#2440B3; --line:#CBD8D3;
+  --ok:#1E8048; --ok-soft:#DDF1E4; --bad:#BC3826; --bad-soft:#F8E1DC;
+  --font-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-head:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#10181B; --card:#182327; --ink:#E4EDE9; --muted:#97A8A3;
+    --form:#62C2AA; --form-soft:#1E3631; --pen:#9AAEFF; --line:#2B3B40;
+    --ok:#5DCB8A; --ok-soft:#183626; --bad:#F08A78; --bad-soft:#3D201B;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#10181B; --card:#182327; --ink:#E4EDE9; --muted:#97A8A3;
+  --form:#62C2AA; --form-soft:#1E3631; --pen:#9AAEFF; --line:#2B3B40;
+  --ok:#5DCB8A; --ok-soft:#183626; --bad:#F08A78; --bad-soft:#3D201B;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--pen);outline-offset:2px}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 48px}
+.hidden{display:none!important}
+
+/* ---------- Startseite ---------- */
+.hero{padding:18px 0 8px}
+.boxword{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 14px}
+.boxword span{width:clamp(22px,6.2vw,40px);height:clamp(30px,8vw,52px);border:2px solid var(--form);background:var(--card);display:grid;place-items:center;font-family:var(--font-head);font-weight:800;font-size:clamp(17px,4.8vw,30px);color:var(--pen)}
+.hero p{margin:0;color:var(--muted);max-width:60ch}
+.brand{font-family:var(--font-head);font-weight:800;font-size:clamp(28px,7vw,44px);line-height:1.05;margin:0 0 12px;letter-spacing:-.01em}
+.stats{display:flex;gap:18px;margin:14px 0 0;color:var(--muted);font-size:15px}
+.stats b{color:var(--ink);font-family:var(--font-head);font-size:20px;display:block;line-height:1.1}
+
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:26px 0 18px;border:2px solid var(--form);background:var(--card)}
+.tab{background:none;border:0;border-right:2px solid var(--form);padding:12px 6px;font-weight:700;font-size:15px;line-height:1.2}
+.tab:last-child{border-right:0}
+.tab[aria-selected="true"]{background:var(--form);color:var(--card)}
+@media (max-width:420px){.tab{font-size:14px;padding:12px 4px}}
+
+.panel h2{font-family:var(--font-head);font-size:24px;margin:4px 0 4px}
+.panel .lead{margin:0 0 16px;color:var(--muted)}
+.list{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);padding:14px 14px;border-left:6px solid var(--form)}
+.row:hover{border-color:var(--form)}
+.row .when{font-family:var(--font-head);font-weight:700;min-width:7.5em;color:var(--form)}
+.row .what{flex:1}
+.row .what strong{display:block}
+.row .what small{color:var(--muted)}
+.row .best{font-family:var(--font-head);font-weight:700;color:var(--pen);white-space:nowrap}
+.row.example{border-left-style:dashed}
+.badge{display:inline-block;font-size:12px;font-weight:700;padding:1px 7px;border:1px solid currentColor;color:var(--bad);margin-left:6px;vertical-align:2px}
+.empty{border:2px dashed var(--line);padding:18px;color:var(--muted);background:var(--card)}
+
+.themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.theme{text-align:left;background:var(--card);border:1px solid var(--line);padding:14px;display:flex;flex-direction:column;gap:6px;min-height:104px}
+.theme:hover{border-color:var(--form)}
+.theme strong{font-family:var(--font-head);font-size:18px;line-height:1.2}
+.theme small{color:var(--muted)}
+.theme .count{margin-top:auto;display:flex;gap:3px;flex-wrap:wrap}
+.theme .count i{width:8px;height:8px;border:1px solid var(--form);display:block}
+.theme .count i.f{background:var(--form)}
+.settings{display:flex;justify-content:flex-end;margin-top:28px}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;padding:4px}
+.disclaimer{margin:16px 0 0;padding:10px 14px;border:1.5px dashed var(--bad);background:var(--card);font-size:15px;max-width:62ch}
+.disclaimer strong{color:var(--bad)}
+
+/* ---------- Quiz ---------- */
+.qtop{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.back{background:var(--card);border:1px solid var(--line);padding:8px 12px;font-weight:700}
+.qtitle{flex:1;font-family:var(--font-head);font-weight:700;line-height:1.2}
+.qtitle small{display:block;font-family:var(--font-body);font-weight:400;color:var(--muted)}
+.timer{font-variant-numeric:tabular-nums;color:var(--muted)}
+/* Lösungsbogen-Leiste: jedes Kästchen = eine Aufgabe */
+.sheet{display:flex;flex-wrap:wrap;gap:3px;margin:8px 0 18px;padding:8px;background:var(--card);border:1px solid var(--line)}
+.sheet span{width:22px;height:26px;border:1.5px solid var(--form);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--muted)}
+.sheet span.cur{outline:2px solid var(--pen);outline-offset:1px;color:var(--pen)}
+.sheet span.ok{background:var(--ok);border-color:var(--ok);color:var(--card)}
+.sheet span.retry{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.qnum{font-family:var(--font-head);font-weight:800;font-size:15px;color:var(--form);margin:0 0 6px}
+.src{color:var(--muted);font-weight:400;font-family:var(--font-body)}
+.situation{background:var(--form-soft);border-left:4px solid var(--form);padding:10px 14px;margin:0 0 14px;font-size:16px}
+.situation b{display:block;font-size:13px;color:var(--form)}
+.question{font-size:20px;line-height:1.4;font-weight:700;margin:0 0 16px;max-width:62ch}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;background:var(--card);border:1px solid var(--line);padding:12px;width:100%}
+.opt .k{flex:none;width:30px;height:34px;border:2px solid var(--form);display:grid;place-items:center;font-family:var(--font-head);font-weight:800;color:var(--form)}
+.opt .t{padding-top:5px}
+.opt:hover:not(:disabled){border-color:var(--pen)}
+.opt:hover:not(:disabled) .k{color:var(--pen);border-color:var(--pen)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad);cursor:default}
+.opt.wrong .k{border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+.opt.right{background:var(--ok-soft);border-color:var(--ok)}
+.opt.right .k{background:var(--ok);border-color:var(--ok);color:var(--card)}
+.opt:disabled:not(.wrong):not(.right){opacity:.55;cursor:default}
+.feedback{margin:14px 0 0;padding:12px 14px;border:2px solid;display:none}
+.feedback.show{display:block}
+.feedback.ok{border-color:var(--ok);background:var(--ok-soft)}
+.feedback.bad{border-color:var(--bad);background:var(--bad-soft);font-weight:700;color:var(--bad)}
+.feedback strong{display:block;color:var(--ok)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.btn{border:2px solid var(--form);background:var(--form);color:var(--card);padding:11px 18px;font-weight:700}
+.btn.ghost{background:var(--card);color:var(--form)}
+.btn:disabled{opacity:.4;cursor:default}
+.hint{font-size:14px;color:var(--muted);margin-top:14px}
+@keyframes nudge{0%,100%{transform:none}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.opt.wrong.anim{animation:nudge .25s}
+@media (prefers-reduced-motion:reduce){.opt.wrong.anim{animation:none}}
+
+/* ---------- Ergebnis ---------- */
+.result{text-align:left;padding:10px 0}
+.result .pct{font-family:var(--font-head);font-weight:800;font-size:clamp(64px,20vw,120px);line-height:.95;color:var(--pen)}
+.result .grade{font-size:20px;font-weight:700;margin:6px 0 4px}
+.result p{color:var(--muted);margin:0 0 6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===================== STARTSEITE ===================== -->
+  <section id="home">
+    <header class="hero">
+      <div class="boxword" aria-hidden="true"></div>
+      <h1 class="brand">Prüfungstrainer Gastgewerbe</h1>
+      <p>Wirtschafts- und Sozialkunde für Hotel, Restaurant, Küche und Systemgastronomie. Trainiere mit Aufgaben im Stil echter Abschlussprüfungen: komplette Prüfung, einzelnes Thema oder neu zusammengestellte Testprüfung.</p>
+      <div class="stats" id="stats"></div>
+      <p class="disclaimer"><strong>Ohne Gewähr:</strong> Alle Aufgaben, Lösungen und Erklärungen wurden sorgfältig erstellt, können aber Fehler enthalten oder durch Gesetzesänderungen veraltet sein. Bitte prüfe die Lösungen immer selbst nach, zum Beispiel im Lehrbuch, im Gesetzestext oder bei deiner Lehrkraft. Rechtsstand der Aufgaben: Herbst 2026. Alle Daten in den Aufgaben sind als Beispielsituation zu verstehen.</p>
+    </header>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="abschluss" aria-selected="true">Abschluss&shy;prüfungen</button>
+      <button class="tab" role="tab" data-tab="themen" aria-selected="false">Themen</button>
+      <button class="tab" role="tab" data-tab="test" aria-selected="false">Test&shy;prüfungen</button>
+    </nav>
+
+    <div class="panel" data-panel="abschluss">
+      <h2>Abschlussprüfungen nach Termin</h2>
+      <p class="lead">Komplette Aufgabensätze, sinngemäß neu formuliert. Reihenfolge und Situationen wie in der Originalprüfung.</p>
+      <div class="list" id="list-abschluss"></div>
+    </div>
+    <div class="panel hidden" data-panel="themen">
+      <h2>Training nach Thema</h2>
+      <p class="lead">Alle Aufgaben aus allen Prüfungen, automatisch nach Thema gruppiert und gemischt.</p>
+      <div class="themes" id="list-themen"></div>
+    </div>
+    <div class="panel hidden" data-panel="test">
+      <h2>Testprüfungen</h2>
+      <p class="lead">Fünf neu erstellte Prüfungen mit Situationsaufgaben und gemischten Themen, aufgebaut wie ein echter Aufgabensatz.</p>
+      <div class="list" id="list-test"></div>
+    </div>
+
+    <div class="settings"><button class="linkbtn" id="reset">Bestwerte zurücksetzen</button></div>
+  </section>
+
+  <!-- ===================== QUIZ ===================== -->
+  <section id="quiz" class="hidden" aria-live="polite">
+    <div class="qtop">
+      <button class="back" id="quit" aria-label="Zur Startseite">← Start</button>
+      <div class="qtitle" id="qtitle"></div>
+      <div class="timer" id="timer">0:00</div>
+    </div>
+    <div class="sheet" id="sheet" aria-label="Lösungsbogen"></div>
+    <p class="qnum" id="qnum"></p>
+    <div class="situation hidden" id="situation"></div>
+    <p class="question" id="question"></p>
+    <div class="opts" id="opts"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="actions">
+      <button class="btn" id="next" disabled>Weiter</button>
+      <button class="btn ghost" id="skip">Überspringen</button>
+    </div>
+    <p class="hint">Tipp: Mit den Tasten 1 bis 5 antworten, mit Enter weiter.</p>
+  </section>
+
+  <!-- ===================== ERGEBNIS ===================== -->
+  <section id="result" class="hidden">
+    <div class="result">
+      <p id="rtitle"></p>
+      <div class="pct" id="rpct"></div>
+      <div class="grade" id="rgrade"></div>
+      <p id="rdetail"></p>
+      <p class="disclaimer"><strong>Ohne Gewähr:</strong> Die Lösungen können Fehler enthalten. Eigenes Nachprüfen ist unbedingt erforderlich.</p>
+    </div>
+    <div class="actions">
+      <button class="btn" id="again">Wiederholen</button>
+      <button class="btn ghost" id="wrongonly">Nur Fehler wiederholen</button>
+      <button class="btn ghost" id="other">Andere Auswahl</button>
+      <button class="btn ghost" id="home-btn">Startseite</button>
+    </div>
+  </section>
+</div>
+
+<script>
+/* =====================================================================
+   THEMEN-KATALOG
+   Ergebnis der Analyse aller hochgeladenen Prüfungen. Die Startseite baut
+   die Themenauswahl automatisch aus den Aufgaben auf (nur Themen mit
+   mindestens einer Aufgabe erscheinen). Fehlt bei einer Aufgabe das Feld
+   "thema", wird sie über die Stichworte automatisch zugeordnet.
+   // NEUE THEMEN HIER EINFÜGEN
+   ===================================================================== */
+const THEMEN = {
+  ausbildung:    {name:"Berufsausbildung & BBiG", info:"Vertrag, Probezeit, Prüfung, Pflichten", stichworte:["ausbild","azubi","probezeit","bbig","berufsschule","prüfung","ausbilder","ausbildungsnachweis"]},
+  arbeitsrecht:  {name:"Arbeitsvertrag & Kündigung", info:"Kündigung, Zeugnis, AGG, Pflichten", stichworte:["kündig","zeugnis","agg","gleichbehandlung","arbeitsvertrag","abmahnung","urlaub","arbeitsgericht"]},
+  schutz:        {name:"Arbeits-, Jugend- & Mutterschutz", info:"JArbSchG, MuSchG, Sicherheit", stichworte:["jarbschg","jugend","mutterschutz","pause","schwanger","sicherheit","warnzeichen","elterngeld"]},
+  entgelt:       {name:"Entgelt & Steuern", info:"Abrechnung, Brutto/Netto, Lohnsteuer", stichworte:["brutto","netto","lohnsteuer","steuerklasse","entgelt","kirchensteuer","abrechnung"]},
+  sozialvers:    {name:"Sozialversicherung & Vorsorge", info:"Kranken-, Renten-, Unfallversicherung", stichworte:["versicherung","rente","krankenkasse","berufsgenossenschaft","pflegekasse","sozialgericht"]},
+  mitbestimmung: {name:"Betriebsrat & Tarifrecht", info:"BetrVG, Tarifvertrag, Gewerkschaft", stichworte:["betriebsrat","tarif","gewerkschaft","streik","betrvg","jav"]},
+  verbraucher:   {name:"Kaufvertrag & Verbraucherrecht", info:"Geschäftsfähigkeit, Widerruf, Mängel", stichworte:["kaufvertrag","widerruf","mangel","geschäftsfähig","verbraucher","preisangabe","vertrag"]},
+  unternehmen:   {name:"Unternehmen & Rechtsformen", info:"Gründung, GmbH, Ziele, Datenschutz", stichworte:["gmbh","handelsregister","unternehmen","standort","gewinn","datenschutz","rechtsform"]},
+  vwl:           {name:"Volkswirtschaft & Wirtschaftspolitik", info:"Konjunktur, Markt, BIP, Sozialpolitik", stichworte:["konjunktur","bip","inflation","markt","bedürfnis","globalisierung","sozialpolitik","zentralbank","kartell"]},
+  weiterbildung: {name:"Weiterbildung, Europa & Arbeitswelt", info:"Fortbildung, Europass, EU, Euro", stichworte:["fortbildung","umschulung","europass","eu-","euro","lernen","bewerbung"]},
+  nachhaltigkeit:{name:"Umwelt & Nachhaltigkeit", info:"Ökologie im Betrieb, Energie", stichworte:["umwelt","nachhaltig","energie","mehrweg","ökolog"]}
+};
+
+/* =====================================================================
+   PRÜFUNGEN
+   Aufbau je Prüfung:
+   { id, art: "abschluss" | "zwischen" | "test", termin, titel, minuten, fragen:[ ... ] }
+   Aufbau je Frage (Multiple Choice, genau eine richtige Antwort):
+   { thema, situation (optional), frage, antworten:[...], richtigeAntwort (Index ab 0), erklaerung }
+
+   Alle Aufgaben wurden aus den hochgeladenen Prüfungssätzen (WiSo Winter 2023/24
+   bis Sommer 2026) thematisch
+   übernommen, aber mit neuen Personen, Betrieben, Zahlen und Formulierungen
+   vollständig neu geschrieben. Zuordnungs-, Reihenfolge- und Rechenaufgaben
+   wurden in Einfachauswahl-Aufgaben umgewandelt.
+   ===================================================================== */
+const PRUEFUNGEN = [
+
+/* ---------------------------------------------------------------------
+   ABSCHLUSSPRÜFUNGEN
+   // FRAGEN HIER EINFÜGEN – weitere Abschlussprüfungen als neues Objekt
+   --------------------------------------------------------------------- */
+{ id:"ap-w2324", art:"abschluss", termin:"Winter 2023/24", titel:"Wirtschafts- und Sozialkunde", minuten:60, fragen:[
+ {thema:"ausbildung", situation:"Lina Hartwig (16) beginnt am 01.08.2025 ihre Ausbildung in der Landgasthof Brunnenhof GmbH.", frage:"Welche Vereinbarung darf in Linas Ausbildungsvertrag stehen?", antworten:["Lina zahlt dem Betrieb monatlich 50 € für die Ausbildung.","Der Betrieb stellt die erforderlichen Ausbildungsmittel, z. B. Fachbücher und Werkzeuge, kostenlos.","Lina verpflichtet sich, nach der Ausbildung zwei Jahre im Betrieb zu bleiben.","Bricht Lina die Ausbildung ab, zahlt sie 1.000 € Vertragsstrafe.","Lina verzichtet in der Hochsaison auf den Berufsschulbesuch."], richtigeAntwort:1, erklaerung:"Ausbildungsmittel muss der Betrieb kostenlos stellen (§ 14 BBiG). Lehrgeld, Vertragsstrafen und Bindungsklauseln sind nach § 12 BBiG nichtig."},
+ {thema:"entgelt", frage:"Lina (16) ist im 1. Ausbildungsjahr und erhält 980 € brutto im Monat. Auf ihrer Entgeltabrechnung wird keine Lohnsteuer abgezogen. Was ist der wahrscheinlichste Grund?", antworten:["Auszubildende sind generell lohnsteuerfrei.","Ihr zu versteuerndes Einkommen liegt unterhalb des Grundfreibetrags.","Lohnsteuer fällt erst ab dem 2. Ausbildungsjahr an.","Minderjährige zahlen nie Lohnsteuer.","Der Betrieb übernimmt die Steuer freiwillig."], richtigeAntwort:1, erklaerung:"Lohnsteuer fällt erst an, wenn das Einkommen den steuerfreien Grundfreibetrag übersteigt. Alter oder Azubi-Status allein befreien nicht."},
+ {thema:"entgelt", situation:"Lina hat ihre Ausbildung am 01.08.2025 begonnen. Laut Vertrag erhält sie: 1. Jahr 980 €, 2. Jahr 1.070 €, 3. Jahr 1.160 € brutto monatlich.", frage:"Welchen Bruttobetrag erhält Lina für Oktober 2026?", antworten:["980,00 €","1.025,00 €","1.070,00 €","1.160,00 €"], richtigeAntwort:2, erklaerung:"Ausbildungsbeginn 01.08.2025: Das 2. Ausbildungsjahr läuft vom 01.08.2026 bis 31.07.2027, also gelten im Oktober 2026 1.070 €."},
+ {thema:"schutz", frage:"Lina ist am 18.02.2009 geboren. Wie viele Werktage Urlaub stehen ihr für 2026 nach dem Jugendarbeitsschutzgesetz mindestens zu?", antworten:["24","25","27","30"], richtigeAntwort:2, erklaerung:"Maßgeblich ist das Alter zu Beginn des Kalenderjahres. Am 01.01.2026 ist Lina 16, also noch nicht 17 Jahre alt: 27 Werktage."},
+ {thema:"ausbildung", frage:"Welche Reihenfolge vom Vertragsabschluss bis zum Arbeitsverhältnis ist richtig?", antworten:["Vertragsabschluss → Eintragung bei der IHK → Probezeit → Abschlussprüfung Teil 1 → Teil 2 → Arbeitsvertrag","Eintragung bei der IHK → Vertragsabschluss → Probezeit → Teil 1 → Teil 2 → Arbeitsvertrag","Vertragsabschluss → Probezeit → Teil 2 → Teil 1 → Eintragung → Arbeitsvertrag","Vertragsabschluss → Eintragung → Teil 1 → Probezeit → Teil 2 → Arbeitsvertrag"], richtigeAntwort:0, erklaerung:"Erst wird der Vertrag geschlossen und von der zuständigen Stelle eingetragen, dann folgen Probezeit, beide Prüfungsteile und gegebenenfalls die Übernahme."},
+ {thema:"ausbildung", frage:"In Linas Ausbildungsvertrag wurde die längste zulässige Probezeit vereinbart. Mit Ablauf welchen Tages endet sie (Beginn 01.08.2025)?", antworten:["31.08.2025","31.10.2025","30.11.2025","31.01.2026"], richtigeAntwort:2, erklaerung:"Die Probezeit beträgt höchstens vier Monate (§ 20 BBiG): 01.08. bis 30.11.2025."},
+ {thema:"schutz", frage:"Die Auszubildende Lina ist 16 Jahre alt und arbeitet an einem Tag 7 Stunden. Wie lange müssen ihre Ruhepausen insgesamt mindestens sein?", antworten:["30 Minuten","45 Minuten","60 Minuten","90 Minuten"], richtigeAntwort:2, erklaerung:"Jugendliche erhalten bei mehr als sechs Stunden Arbeitszeit mindestens 60 Minuten Pause (§ 11 JArbSchG)."},
+ {thema:"weiterbildung", frage:"Welche Eigenschaft ist eine überfachliche Schlüsselqualifikation?", antworten:["Kenntnis der Garmethoden","Teamfähigkeit","Bedienung der Kassensoftware","Wissen über Weinanbaugebiete"], richtigeAntwort:1, erklaerung:"Schlüsselqualifikationen wie Teamfähigkeit sind berufsübergreifend nutzbar, Fachwissen dagegen ist berufsspezifisch."},
+ {thema:"entgelt", situation:"Jana Roth arbeitet als Servicekraft mit 2.650 € Bruttomonatsentgelt.", frage:"Wie hoch ist Janas Arbeitnehmeranteil zur Rentenversicherung bei einem Gesamtbeitragssatz von 18,6 %?", antworten:["231,00 €","246,45 €","265,00 €","492,90 €"], richtigeAntwort:1, erklaerung:"Der Beitrag wird je zur Hälfte getragen: 9,3 % von 2.650 € = 246,45 €."},
+ {thema:"entgelt", frage:"Der Arbeitgeber zahlt Jana ab sofort zusätzlich 40 € vermögenswirksame Leistungen. Um wie viel steigt ihr steuer- und beitragspflichtiges Bruttoentgelt?", antworten:["0 €","20 €","40 €","80 €"], richtigeAntwort:2, erklaerung:"Arbeitgeberzuschüsse zu vermögenswirksamen Leistungen sind Teil des Bruttoentgelts und damit steuer- und beitragspflichtig."},
+ {thema:"sozialvers", frage:"Für welche Leistung übernimmt die gesetzliche Krankenversicherung die Kosten vollständig?", antworten:["Brille für eine Erwachsene mit normaler Sehschwäche","Zahnkrone","Behandlung beim Hausarzt wegen einer Grippe","Verschreibungspflichtiges Medikament ohne Zuzahlungsbefreiung"], richtigeAntwort:2, erklaerung:"Ärztliche Behandlung ist vollständig abgedeckt. Bei Zahnersatz gibt es Festzuschüsse, bei Medikamenten Zuzahlungen, Brillen für Erwachsene meist gar nicht."},
+ {thema:"arbeitsrecht", situation:"Koch Malte Brenner erhält am Donnerstag, 05.03.2026, eine Kündigung, die er für sozial ungerechtfertigt hält.", frage:"Bis zu welchem Tag muss er spätestens Kündigungsschutzklage erheben?", antworten:["12.03.2026","19.03.2026","26.03.2026","05.04.2026"], richtigeAntwort:2, erklaerung:"Die Klage muss innerhalb von drei Wochen nach Zugang beim Arbeitsgericht eingehen (§ 4 KSchG)."},
+ {thema:"sozialvers", frage:"Koch Malte wurde gekündigt; sein Arbeitsverhältnis endet in zwei Monaten. Was muss er tun, um danach Arbeitslosengeld zu erhalten?", antworten:["Sich bei der Agentur für Arbeit arbeitsuchend und dann arbeitslos melden","Einen Antrag bei der Berufsgenossenschaft stellen","Sich beim Gewerbeamt abmelden","Einen Antrag bei der Rentenversicherung stellen"], richtigeAntwort:0, erklaerung:"Die Arbeitsuchendmeldung muss spätestens drei Monate vor Ende bzw. innerhalb von drei Tagen nach Kenntnis erfolgen, sonst droht eine Sperrzeit."},
+ {thema:"unternehmen", frage:"Welche Zuordnung von Institution und Aufgabe ist richtig?", antworten:["Berufsgenossenschaft – Träger der gesetzlichen Unfallversicherung","Gewerkschaft – Abnahme der Abschlussprüfungen","Gesundheitsamt – Führen des Handelsregisters","IHK – Auszahlung des Arbeitslosengeldes"], richtigeAntwort:0, erklaerung:"Die Berufsgenossenschaften sind die Unfallversicherungsträger der gewerblichen Wirtschaft."},
+ {thema:"nachhaltigkeit", frage:"Der Betrieb will wegen hoher Energiepreise auf erneuerbare Energie setzen. Welche Quelle ist erneuerbar?", antworten:["Erdgas","Heizöl","Solarenergie","Steinkohle"], richtigeAntwort:2, erklaerung:"Sonnenenergie steht dauerhaft zur Verfügung. Gas, Öl und Kohle sind fossile, endliche Energieträger."},
+ {thema:"arbeitsrecht", frage:"Welche Stellenanzeige entspricht dem Allgemeinen Gleichbehandlungsgesetz?", antworten:["„Junge Servicekraft für unser dynamisches Team gesucht“","„Kellnerin mit gepflegtem Äußeren gesucht“","„Küchenhilfe (m/w/d) mit Erfahrung gesucht“","„Barkeeper, deutscher Muttersprachler, bis 30 Jahre“"], richtigeAntwort:2, erklaerung:"Die Anzeige ist geschlechtsneutral und stellt eine sachliche Anforderung. Alters-, Geschlechts- oder Herkunftsvorgaben sind diskriminierend."},
+ {thema:"arbeitsrecht", frage:"Welche Pflicht übernimmt eine Arbeitnehmerin mit dem Arbeitsvertrag?", antworten:["Fürsorgepflicht","Entgeltzahlungspflicht","Verschwiegenheit über Betriebsgeheimnisse","Pflicht zur Zeugniserteilung"], richtigeAntwort:2, erklaerung:"Arbeitnehmer schulden Arbeitsleistung, Treue und Verschwiegenheit. Fürsorge, Entgelt und Zeugnis sind Pflichten des Arbeitgebers."},
+ {thema:"entgelt", frage:"Aushilfe Elif verdient 14,60 € je Stunde. Im Mai arbeitet sie 80 Stunden, davon 10 Stunden mit 25 % Nachtzuschlag. Wie hoch ist ihr Bruttoentgelt?", antworten:["1.168,00 €","1.204,50 €","1.241,00 €","1.314,00 €"], richtigeAntwort:1, erklaerung:"80 × 14,60 € = 1.168,00 €; Zuschlag 10 × 3,65 € = 36,50 €; zusammen 1.204,50 €."},
+ {thema:"verbraucher", situation:"Sie bestellen privat in einem Onlineshop sechs Weingläser.", frage:"Wie lange ist die gesetzliche Widerrufsfrist?", antworten:["7 Tage","10 Tage","14 Tage","30 Tage"], richtigeAntwort:2, erklaerung:"Bei Fernabsatzverträgen gilt eine Widerrufsfrist von 14 Tagen ab Erhalt der Ware (§ 355 BGB)."},
+ {thema:"verbraucher", frage:"Welche Pflicht übernimmt der Verkäufer mit dem Kaufvertrag?", antworten:["Die Ware mangelfrei übergeben und das Eigentum verschaffen","Die Ware abnehmen","Den Kaufpreis pünktlich zahlen","Die Ware auf eigene Kosten versichern"], richtigeAntwort:0, erklaerung:"§ 433 BGB: Der Verkäufer muss übergeben und übereignen, der Käufer zahlen und abnehmen."},
+ {thema:"verbraucher", frage:"Sie haben privat online sechs Weingläser bestellt. Zwei Gläser kommen zerbrochen an. Welches Recht haben Sie vorrangig?", antworten:["Rücktritt vom Vertrag","Nacherfüllung, z. B. Ersatzlieferung","Minderung des Kaufpreises","Schadensersatz"], richtigeAntwort:1, erklaerung:"Bei einem Mangel steht dem Käufer zuerst die Nacherfüllung zu. Erst wenn sie scheitert, kommen Rücktritt oder Minderung in Frage."},
+ {thema:"verbraucher", frage:"Wozu dient die Angabe des Grundpreises nach der Preisangabenverordnung?", antworten:["Sie nennt den Preis je Mengeneinheit, z. B. je Liter, und erleichtert so den Preisvergleich.","Sie zeigt den Einkaufspreis des Händlers.","Sie nennt den Preis ohne Umsatzsteuer.","Sie gibt den Alkoholgehalt an."], richtigeAntwort:0, erklaerung:"Der Grundpreis macht unterschiedliche Packungsgrößen vergleichbar."},
+ {thema:"vwl", frage:"Die Zahl der Arbeitslosen stieg im Vorjahresvergleich von 2,40 Mio. auf 2,64 Mio. Um wie viel Prozent?", antworten:["8 %","10 %","12 %","24 %"], richtigeAntwort:1, erklaerung:"Zuwachs 0,24 Mio. ÷ 2,40 Mio. × 100 = 10 %."},
+ {thema:"vwl", frage:"Welche Folge der Globalisierung trifft für einen Gastronomiebetrieb zu?", antworten:["Die Konkurrenz durch internationale Ketten nimmt zu.","Lebensmittelimporte sind nicht mehr möglich.","Ausländische Gäste bleiben zwangsläufig aus.","Wechselkurse spielen keine Rolle mehr."], richtigeAntwort:0, erklaerung:"Durch offene Märkte treten internationale Anbieter in Wettbewerb mit heimischen Betrieben."},
+ {thema:"vwl", frage:"Welcher Standortvorteil spricht für Deutschland als Industriestandort?", antworten:["Sehr niedrige Lohnkosten","Gut ausgebildete Fachkräfte und gute Infrastruktur","Die niedrigsten Energiepreise Europas","Keine Umweltauflagen"], richtigeAntwort:1, erklaerung:"Qualifikation, Infrastruktur und Rechtssicherheit gelten als Stärken, Lohn- und Energiekosten eher als Nachteile."},
+ {thema:"unternehmen", frage:"Zu welcher betrieblichen Grundfunktion gehört das Gestalten eines Werbeflyers für das Mittagsmenü?", antworten:["Beschaffung","Leistungserstellung","Absatz (Marketing)","Verwaltung"], richtigeAntwort:2, erklaerung:"Werbung dient dem Verkauf der Leistungen und gehört damit zum Absatz."}
+]},
+
+{ id:"ap-s24", art:"abschluss", termin:"Sommer 2024", titel:"Wirtschafts- und Sozialkunde", minuten:60, fragen:[
+ {thema:"ausbildung", frage:"Die Parkhotel Elster GmbH möchte erstmals ausbilden. Welche Voraussetzung verlangt das Berufsbildungsgesetz?", antworten:["Mindestens 50 Beschäftigte","Einen persönlich und fachlich geeigneten Ausbilder","Mitgliedschaft im Arbeitgeberverband","Zustimmung der Berufsschule"], richtigeAntwort:1, erklaerung:"Nach §§ 28–30 BBiG muss eine persönlich und fachlich geeignete Person ausbilden; zudem muss die Ausbildungsstätte geeignet sein."},
+ {thema:"arbeitsrecht", situation:"Das Parkhotel veröffentlicht die Anzeige: „Wir suchen eine junge, dynamische Rezeptionistin.“", frage:"Gegen welches Gesetz verstößt die Anzeige?", antworten:["Berufsbildungsgesetz","Allgemeines Gleichbehandlungsgesetz","Arbeitszeitgesetz","Betriebsverfassungsgesetz"], richtigeAntwort:1, erklaerung:"„Jung“ benachteiligt wegen des Alters, „Rezeptionistin“ wegen des Geschlechts – beides verbietet das AGG."},
+ {thema:"arbeitsrecht", frage:"Svenja Kühn verlässt das Hotel und möchte ein Zeugnis, das nur Art und Dauer ihrer Tätigkeit nennt. Wie heißt dieses Zeugnis?", antworten:["Qualifiziertes Zeugnis","Einfaches Zeugnis","Zwischenzeugnis","Ausbildungsnachweis"], richtigeAntwort:1, erklaerung:"Das einfache Zeugnis enthält nur Art und Dauer; das qualifizierte zusätzlich Leistung und Verhalten."},
+ {thema:"arbeitsrecht", frage:"Welche Angabe muss ein einfaches Zeugnis nicht enthalten?", antworten:["Name der Arbeitnehmerin","Dauer der Beschäftigung","Art der Tätigkeit","Beurteilung von Leistung und Verhalten"], richtigeAntwort:3, erklaerung:"Eine Leistungs- und Verhaltensbeurteilung gehört nur in das qualifizierte Zeugnis."},
+ {thema:"entgelt", situation:"Tarifauszug: Gruppe 2 (angelernt) 2.310 €; Gruppe 3 (ausgebildete Fachkraft, 1.–2. Berufsjahr) 2.540 €; Gruppe 3 ab 3. Berufsjahr 2.640 €.", frage:"Svenjas Nachfolger hat seine Ausbildung gerade abgeschlossen. Welches Monatsentgelt steht ihm in Vollzeit zu?", antworten:["2.310 €","2.540 €","2.640 €","2.700 €"], richtigeAntwort:1, erklaerung:"Ausgebildete Fachkraft im 1. Berufsjahr: Gruppe 3, Stufe 1.–2. Berufsjahr = 2.540 €."},
+ {thema:"entgelt", frage:"Welche Leistung des Arbeitgebers ist freiwillig?", antworten:["Arbeitgeberanteil zur Rentenversicherung","Entgeltfortzahlung im Krankheitsfall","Kostenloses Jobticket","Beitrag zur Unfallversicherung"], richtigeAntwort:2, erklaerung:"Ein Jobticket ist eine freiwillige Sozialleistung. Die übrigen Leistungen sind gesetzlich vorgeschrieben."},
+ {thema:"ausbildung", frage:"Eine Auszubildende darf ihre Ausbildung verkürzen. Was muss daraufhin geschehen?", antworten:["Der Ausbilder passt die zeitliche Gliederung des betrieblichen Ausbildungsplans an.","Die Ausbildungsinhalte werden gekürzt.","Die Berufsschule entfällt im letzten Jahr.","Die Abschlussprüfung entfällt."], richtigeAntwort:0, erklaerung:"Alle Inhalte müssen weiterhin vermittelt werden – nur in kürzerer Zeit. Deshalb wird der Zeitplan angepasst."},
+ {thema:"mitbestimmung", frage:"Wer kann Tarifverträge abschließen?", antworten:["Betriebsrat und Arbeitgeber","Gewerkschaften und Arbeitgeberverbände (oder einzelne Arbeitgeber)","IHK und Handwerkskammer","Bundestag und Bundesrat"], richtigeAntwort:1, erklaerung:"Tarifvertragsparteien sind Gewerkschaften auf der einen, Arbeitgeberverbände oder einzelne Arbeitgeber auf der anderen Seite."},
+ {thema:"mitbestimmung", frage:"Welche Reihenfolge eines Arbeitskampfes ist richtig?", antworten:["Scheitern der Verhandlungen → Urabstimmung → Streik → Schlichtung/neue Verhandlungen → zweite Urabstimmung → neuer Tarifvertrag","Streik → Urabstimmung → Verhandlungen → Tarifvertrag → Schlichtung","Urabstimmung → Scheitern der Verhandlungen → Tarifvertrag → Streik","Schlichtung → Streik → Urabstimmung → Tarifvertrag"], richtigeAntwort:0, erklaerung:"Gestreikt wird erst nach gescheiterten Verhandlungen und erfolgreicher Urabstimmung; ein Ergebnis wird in einer zweiten Urabstimmung angenommen."},
+ {thema:"mitbestimmung", frage:"Wie heißt das Recht der Tarifpartner, Tarifverträge ohne staatliche Einmischung auszuhandeln?", antworten:["Friedenspflicht","Tarifautonomie","Koalitionsverbot","Allgemeinverbindlichkeit"], richtigeAntwort:1, erklaerung:"Die Tarifautonomie ist durch die Koalitionsfreiheit in Art. 9 Abs. 3 Grundgesetz geschützt."},
+ {thema:"entgelt", frage:"Ein Mitarbeiter hat 2.380 € Grundentgelt und erhält im Januar einmalig eine Prämie von 250 € brutto. Wie hoch ist sein Bruttoentgelt im Januar?", antworten:["2.380 €","2.505 €","2.630 €","2.880 €"], richtigeAntwort:2, erklaerung:"Einmalzahlungen kommen zum laufenden Entgelt hinzu: 2.380 € + 250 € = 2.630 €."},
+ {thema:"sozialvers", frage:"Welche Leistung ist eine gesetzliche Sozialleistung des Arbeitgebers?", antworten:["Arbeitgeberanteil zur Kranken-, Renten-, Arbeitslosen- und Pflegeversicherung","Betriebsausflug","Essenszuschuss","Zuschuss zum Fitnessstudio"], richtigeAntwort:0, erklaerung:"Die Arbeitgeberanteile zur Sozialversicherung sind gesetzlich vorgeschrieben, die anderen Leistungen freiwillig."},
+ {thema:"entgelt", frage:"Eine Mitarbeiterin ist fünf Tage krank und legt die Bescheinigung fristgerecht vor. Was gilt?", antworten:["Sie erhält für diese Tage kein Entgelt.","Der Arbeitgeber zahlt das Entgelt bis zu sechs Wochen weiter.","Die Krankenkasse zahlt ab dem ersten Tag Krankengeld.","Die Tage werden vom Urlaub abgezogen."], richtigeAntwort:1, erklaerung:"Nach dem Entgeltfortzahlungsgesetz zahlt der Arbeitgeber bis zu sechs Wochen, danach die Krankenkasse Krankengeld."},
+ {thema:"sozialvers", frage:"Warum empfiehlt der Staat zusätzlich eine private Altersvorsorge?", antworten:["Die gesetzliche Rente wird abgeschafft.","Durch den demografischen Wandel kommen immer weniger Beitragszahler auf einen Rentner.","Private Vorsorge ist gesetzlich vorgeschrieben.","Die Rentenversicherung zahlt nur an Beamte."], richtigeAntwort:1, erklaerung:"Im Umlageverfahren sinkt bei weniger Beitragszahlern das Rentenniveau – private Vorsorge soll die Lücke schließen."},
+ {thema:"arbeitsrecht", frage:"Ein Mitarbeiter streitet mit seinem Arbeitgeber über nicht bezahlte Überstunden. Welches Gericht ist zuständig?", antworten:["Amtsgericht","Arbeitsgericht","Sozialgericht","Finanzgericht"], richtigeAntwort:1, erklaerung:"Streitigkeiten aus dem Arbeitsverhältnis gehören vor das Arbeitsgericht."},
+ {thema:"weiterbildung", frage:"Worum geht es typischerweise in einem Mitarbeiter-Feedbackgespräch?", antworten:["Um Leistung, Entwicklung und Ziele","Um private Urlaubspläne","Um die Gehälter der Kollegen","Um die Gewinnverteilung"], richtigeAntwort:0, erklaerung:"Im Feedbackgespräch werden Leistung bewertet, Entwicklungsmöglichkeiten besprochen und Ziele vereinbart."},
+ {thema:"weiterbildung", frage:"Welche Maßnahme ist eine berufliche Fortbildung?", antworten:["Lehrgang zur Meisterprüfung im Gastgewerbe","Umschulung eines Kochs zum Pflegefachmann","Erstausbildung zur Fachkraft","Kochkurs im privaten Urlaub"], richtigeAntwort:0, erklaerung:"Fortbildung baut auf dem erlernten Beruf auf; die Umschulung führt in einen anderen Beruf."},
+ {thema:"unternehmen", frage:"Welches Unternehmensziel ist ein ökonomisches Ziel?", antworten:["Einwegplastik halbieren","Gewinn um 5 % steigern","Betriebskita einrichten","Gesundheitskurse für Mitarbeitende anbieten"], richtigeAntwort:1, erklaerung:"Gewinn ist ein ökonomisches Ziel; Plastik reduzieren ist ökologisch, Kita und Gesundheitskurse sind soziale Ziele."},
+ {thema:"vwl", frage:"Welches Beispiel zeigt das soziale Element der sozialen Marktwirtschaft?", antworten:["Ein Gast entscheidet selbst, welches Gericht er bestellt.","Wirte legen ihre Preise frei fest.","Bedürftige erhalten staatliche Grundsicherung.","Unternehmen wählen ihre Lieferanten frei."], richtigeAntwort:2, erklaerung:"Die soziale Absicherung Bedürftiger ist das soziale Element; die übrigen Beispiele zeigen das marktwirtschaftliche Element."},
+ {thema:"unternehmen", frage:"In einem Restaurant steigen die Personalkosten bei gleichem Umsatz um 5 %. Welche Kennzahl steigt dadurch?", antworten:["Wareneinsatzquote","Personalkostenquote","Umsatzrentabilität","Eigenkapitalquote"], richtigeAntwort:1, erklaerung:"Personalkostenquote = Personalkosten ÷ Umsatz × 100. Steigen die Kosten bei gleichem Umsatz, steigt die Quote."},
+ {thema:"mitbestimmung", frage:"Der Tarifvertrag sieht 3 % mehr Ausbildungsvergütung vor. Was bedeutet das für eine tarifgebundene Auszubildende mit bisher 1.000 €?", antworten:["Sie erhält 1.030 €.","Sie erhält 1.003 €.","Nichts, denn Tarifverträge gelten nicht für Auszubildende.","Sie erhält 1.300 €."], richtigeAntwort:0, erklaerung:"3 % von 1.000 € sind 30 €. Tarifliche Regelungen können auch für Auszubildende gelten."},
+ {thema:"vwl", frage:"Was ist der wichtigste Zweck eines privaten Haushaltsplans?", antworten:["Überblick über Einnahmen und Ausgaben, um Überschuldung zu vermeiden","Steuern sparen","Die Kreditwürdigkeit automatisch steigern","Eine gesetzliche Pflicht erfüllen"], richtigeAntwort:0, erklaerung:"Wer Einnahmen und Ausgaben kennt, kann planen und Schulden vermeiden."},
+ {thema:"verbraucher", situation:"Der Auszubildende Ben Rotter ist 17 Jahre alt.", frage:"Ben (17) will einen Handyvertrag abschließen. Warum müssen seine Eltern zustimmen?", antworten:["Er ist beschränkt geschäftsfähig.","Er ist geschäftsunfähig.","Er ist voll geschäftsfähig.","Handyverträge sind für Auszubildende verboten."], richtigeAntwort:0, erklaerung:"Von 7 bis 17 Jahren ist man beschränkt geschäftsfähig; Verträge mit Verpflichtungen brauchen die Zustimmung der gesetzlichen Vertreter."},
+ {thema:"arbeitsrecht", frage:"Ein Arbeitsvertrag beginnt am 15.03.2026 mit sechs Monaten Probezeit. Mit Ablauf welchen Tages endet die Probezeit?", antworten:["14.09.2026","15.09.2026","31.08.2026","30.09.2026"], richtigeAntwort:0, erklaerung:"Sechs Monate ab dem 15.03. enden mit Ablauf des 14.09."},
+ {thema:"schutz", frage:"Ben (17) beginnt um 8:00 Uhr zu arbeiten. Wann muss seine erste Ruhepause spätestens beginnen?", antworten:["10:00 Uhr","11:00 Uhr","12:30 Uhr","14:00 Uhr"], richtigeAntwort:2, erklaerung:"Jugendliche dürfen nicht länger als 4,5 Stunden ohne Pause beschäftigt werden (§ 11 Abs. 2 JArbSchG)."},
+ {thema:"verbraucher", frage:"Ein Restaurant erkundigt sich telefonisch bei einer Bäckerei nach Preisen und Lieferzeiten. Wie heißt dieser Vorgang?", antworten:["Angebot","Anfrage","Bestellung","Auftragsbestätigung"], richtigeAntwort:1, erklaerung:"Die Anfrage ist eine unverbindliche Erkundigung des Käufers."},
+ {thema:"verbraucher", frage:"Welchen Vorteil hat eine schriftliche Auftragsbestätigung?", antworten:["Sie dient als Beweis für den vereinbarten Vertragsinhalt.","Sie macht den Vertrag widerrufbar.","Sie ersetzt die Rechnung.","Sie verlängert die Gewährleistung."], richtigeAntwort:0, erklaerung:"Mündliche Verträge sind gültig, aber schwer beweisbar – die schriftliche Bestätigung schafft Klarheit."},
+ {thema:"verbraucher", frage:"Bestellt wurden 50 belegte Brötchen zu je 2,40 € netto; 10 weitere werden wegen Mängeln zum halben Preis berechnet. Wie hoch ist die Rechnung brutto bei 7 % Umsatzsteuer?", antworten:["132,00 €","141,24 €","154,08 €","157,08 €"], richtigeAntwort:1, erklaerung:"50 × 2,40 € + 10 × 1,20 € = 132,00 € netto; × 1,07 = 141,24 €."}
+]},
+
+{ id:"ap-w2425", art:"abschluss", termin:"Winter 2024/25", titel:"Wirtschafts- und Sozialkunde", minuten:60, fragen:[
+ {thema:"ausbildung", situation:"Nina Albers ist Restaurantfachfrau in der Gasthof Drei Linden KG.", frage:"In welchem Gesetz ist die Abschlussprüfung der dualen Ausbildung geregelt?", antworten:["Berufsbildungsgesetz","Jugendarbeitsschutzgesetz","Handelsgesetzbuch","Arbeitszeitgesetz"], richtigeAntwort:0, erklaerung:"Das BBiG regelt das Prüfungswesen (§§ 37 ff.)."},
+ {thema:"ausbildung", frage:"Wo sind die konkreten Prüfungsanforderungen eines Ausbildungsberufs festgelegt?", antworten:["In der Ausbildungsordnung des Berufs","Im Betriebsverfassungsgesetz","Im Tarifvertrag","In der Gewerbeordnung"], richtigeAntwort:0, erklaerung:"Die Ausbildungsordnung (Verordnung) legt Berufsbild, Ausbildungsrahmenplan und Prüfungsanforderungen fest."},
+ {thema:"arbeitsrecht", frage:"Nina kündigt mit gesetzlicher Frist (4 Wochen zum 15. oder Monatsende). Die Kündigung geht am Montag, 04.05.2026, zu. Wann endet das Arbeitsverhältnis frühestens?", antworten:["31.05.2026","01.06.2026","15.06.2026","30.06.2026"], richtigeAntwort:2, erklaerung:"Vier Wochen ab 04.05. reichen bis 01.06.; der nächste zulässige Endtermin ist der 15.06.2026."},
+ {thema:"arbeitsrecht", frage:"In welcher Form muss eine Kündigung erfolgen?", antworten:["Schriftlich mit eigenhändiger Unterschrift","Eine E-Mail genügt","Mündlich vor Zeugen","Als Messenger-Nachricht"], richtigeAntwort:0, erklaerung:"§ 623 BGB verlangt die Schriftform; die elektronische Form ist ausgeschlossen."},
+ {thema:"ausbildung", frage:"Ein Bewerber mit Abitur möchte die Ausbildungszeit verkürzen. Wer entscheidet auf Antrag?", antworten:["Die zuständige Stelle, z. B. die IHK","Die Berufsschule","Der Betriebsrat","Die Agentur für Arbeit"], richtigeAntwort:0, erklaerung:"Über Verkürzungen entscheidet die zuständige Stelle auf gemeinsamen Antrag (§ 8 BBiG)."},
+ {thema:"mitbestimmung", frage:"Die Regierung will per Gesetz eine Nullrunde bei den Löhnen anordnen. Wogegen verstößt das?", antworten:["Gegen die Tarifautonomie","Gegen das Kartellrecht","Gegen die Friedenspflicht","Gegen das AGG"], richtigeAntwort:0, erklaerung:"Lohnfindung ist Sache der Tarifpartner; staatliche Eingriffe verletzen die grundgesetzlich geschützte Tarifautonomie."},
+ {thema:"mitbestimmung", frage:"Welches Gesetz regelt die Rechte des Betriebsrats?", antworten:["Betriebsverfassungsgesetz","Tarifvertragsgesetz","Kündigungsschutzgesetz","Bürgerliches Gesetzbuch"], richtigeAntwort:0, erklaerung:"Wahl, Aufgaben und Mitbestimmungsrechte des Betriebsrats stehen im BetrVG."},
+ {thema:"mitbestimmung", frage:"Was ist der erste Schritt einer Betriebsratswahl?", antworten:["Bestellung eines Wahlvorstands","Auszählung der Stimmen","Konstituierende Sitzung","Wahl des Vorsitzenden"], richtigeAntwort:0, erklaerung:"Der Wahlvorstand organisiert die Wahl: Wählerliste, Wahlausschreiben, Kandidaten, Stimmabgabe, Auszählung."},
+ {thema:"mitbestimmung", frage:"Im Betrieb arbeiten 48 Personen; 4 davon sind unter 16, 2 sind leitende Angestellte. Wie viele sind bei der Betriebsratswahl wahlberechtigt?", antworten:["42","44","46","48"], richtigeAntwort:0, erklaerung:"Wahlberechtigt sind Arbeitnehmer ab 16 Jahren; leitende Angestellte zählen nicht: 48 − 4 − 2 = 42."},
+ {thema:"weiterbildung", frage:"Ein Koch lässt sich wegen einer Mehlallergie zum Hotelkaufmann ausbilden. Wie heißt das?", antworten:["Fortbildung","Umschulung","Anpassungsqualifizierung","Aufstiegsfortbildung"], richtigeAntwort:1, erklaerung:"Die Umschulung befähigt zu einer anderen beruflichen Tätigkeit (§ 1 Abs. 5 BBiG)."},
+ {thema:"weiterbildung", frage:"Was bedeutet lebenslanges Lernen im Berufsleben?", antworten:["Wissen und Fähigkeiten laufend an Veränderungen anpassen","Nach der Ausbildung nie mehr lernen müssen","Automatisch mehr Einkommen erhalten","Ausschließlich Online-Kurse besuchen"], richtigeAntwort:0, erklaerung:"Technik, Gästewünsche und Vorschriften ändern sich – wer weiterlernt, bleibt beschäftigungsfähig."},
+ {thema:"weiterbildung", frage:"Welchen Vorteil bietet der Europass?", antworten:["Qualifikationen werden europaweit einheitlich und verständlich dargestellt.","Er ersetzt den Personalausweis.","Er garantiert einen Arbeitsplatz im Ausland.","Er befreit von Steuern im Ausland."], richtigeAntwort:0, erklaerung:"Mit Lebenslauf, Mobilitätsnachweis und Zeugniserläuterung macht der Europass Abschlüsse vergleichbar."},
+ {thema:"weiterbildung", frage:"In welchem Land ist der Euro gesetzliches Zahlungsmittel (Stand 2026)?", antworten:["Schweiz","Österreich","Polen","Dänemark"], richtigeAntwort:1, erklaerung:"Österreich gehört zum Euroraum; Schweiz, Polen und Dänemark haben eigene Währungen."},
+ {thema:"schutz", frage:"Ein Mitarbeiter hat nach einem Unfall einen Grad der Behinderung von 50. Welches zusätzliche Recht hat er?", antworten:["Fünf Arbeitstage Zusatzurlaub pro Jahr bei einer 5-Tage-Woche","Doppelte Entgeltfortzahlung","Befreiung von der Lohnsteuer","Arbeit nur am Wochenende"], richtigeAntwort:0, erklaerung:"Schwerbehinderte Menschen haben Anspruch auf eine Arbeitswoche Zusatzurlaub (§ 208 SGB IX)."},
+ {thema:"sozialvers", frage:"Welche Versicherung gehört nicht zur gesetzlichen Sozialversicherung?", antworten:["Pflegeversicherung","Unfallversicherung","Private Haftpflichtversicherung","Arbeitslosenversicherung"], richtigeAntwort:2, erklaerung:"Die fünf Säulen sind Kranken-, Pflege-, Renten-, Arbeitslosen- und Unfallversicherung."},
+ {thema:"entgelt", situation:"Ninas Abrechnung: Brutto 2.400 €, Lohnsteuer 180 €, Kirchensteuer 14,40 €, Sozialversicherung (Arbeitnehmeranteil) 504 €, Sparrate vermögenswirksame Leistungen 40 €.", frage:"Wie hoch ist der Überweisungsbetrag?", antworten:["1.621,60 €","1.661,60 €","1.701,60 €","1.716,00 €"], richtigeAntwort:1, erklaerung:"Netto: 2.400 − 180 − 14,40 − 504 = 1.701,60 €; abzüglich 40 € VL-Sparrate = 1.661,60 €."},
+ {thema:"entgelt", frage:"Von Ninas Nettoentgelt werden 40 € als Sparrate für vermögenswirksame Leistungen einbehalten. Wohin überweist der Arbeitgeber diesen Betrag?", antworten:["Auf einen vermögenswirksamen Vertrag, z. B. einen Bausparvertrag","An das Finanzamt","An die Krankenkasse","Auf Ninas Girokonto"], richtigeAntwort:0, erklaerung:"VL werden direkt auf einen begünstigten Sparvertrag der Arbeitnehmerin eingezahlt."},
+ {thema:"entgelt", frage:"Zwei Kolleginnen haben das gleiche Bruttoentgelt, aber unterschiedliche Nettoentgelte. Was ist ein möglicher Grund?", antworten:["Unterschiedliche Steuerklassen","Unterschiedliche Urlaubstage","Unterschiedliche Einsatzorte im Betrieb","Unterschiedliche Pausenzeiten"], richtigeAntwort:0, erklaerung:"Steuerklasse, Kirchensteuerpflicht, Kinder (Pflegeversicherung) und Krankenkassen-Zusatzbeitrag beeinflussen das Netto."},
+ {thema:"sozialvers", frage:"Ein Geringverdiener erhält die gleiche medizinische Behandlung wie ein Gutverdiener, obwohl er weniger einzahlt. Welcher Grundsatz liegt zugrunde?", antworten:["Äquivalenzprinzip","Solidaritätsprinzip","Subsidiaritätsprinzip","Leistungsprinzip"], richtigeAntwort:1, erklaerung:"Beiträge richten sich nach dem Einkommen, Leistungen nach dem Bedarf – das ist das Solidaritätsprinzip."},
+ {thema:"unternehmen", situation:"Mia Lenz und Tom Weber gründen die Lenz & Weber Burger GmbH. Mia bringt 30.000 €, Tom 20.000 € ein.", frage:"In welches Verzeichnis muss die GmbH eingetragen werden?", antworten:["Handelsregister","Grundbuch","Vereinsregister","Melderegister"], richtigeAntwort:0, erklaerung:"Die GmbH entsteht erst mit der Eintragung ins Handelsregister (Abteilung B)."},
+ {thema:"unternehmen", frage:"An der Lenz & Weber Burger GmbH ist Mia mit 30.000 € und Tom mit 20.000 € beteiligt. Der Jahresgewinn von 40.000 € wird nach Geschäftsanteilen verteilt. Wie viel erhält Tom?", antworten:["8.000 €","16.000 €","20.000 €","24.000 €"], richtigeAntwort:1, erklaerung:"Tom hält 20.000 von 50.000 € = 40 %; 40 % von 40.000 € = 16.000 €."},
+ {thema:"verbraucher", frage:"Eine Konditorei schickt dem Restaurant unaufgefordert eine E-Mail mit Tortenpreisen und Lieferbedingungen. Wie heißt das?", antworten:["Anfrage","Angebot","Bestellung","Mahnung"], richtigeAntwort:1, erklaerung:"Mit dem Angebot erklärt der Verkäufer, zu welchen Bedingungen er liefern will."},
+ {thema:"verbraucher", frage:"Die gelieferte Torte ist verdorben. Welches Recht hat das Restaurant zuerst?", antworten:["Nacherfüllung durch Lieferung einer einwandfreien Torte","Sofortigen Schadensersatz","Strafanzeige","In jedem Fall Rücktritt ohne Fristsetzung"], richtigeAntwort:0, erklaerung:"Vorrangig ist die Nacherfüllung; weitere Rechte bestehen, wenn sie scheitert oder unzumutbar ist."},
+ {thema:"sozialvers", frage:"Welche Sozialversicherung wird allein vom Arbeitgeber finanziert?", antworten:["Krankenversicherung","Unfallversicherung","Rentenversicherung","Pflegeversicherung"], richtigeAntwort:1, erklaerung:"Die Beiträge zur Berufsgenossenschaft zahlt ausschließlich der Arbeitgeber."},
+ {thema:"vwl", frage:"Welche Auswirkung hat ein Konjunkturabschwung typischerweise?", antworten:["Die Arbeitslosigkeit steigt.","Die Nachfrage steigt stark.","Die Steuereinnahmen steigen.","Die Auftragsbestände wachsen."], richtigeAntwort:0, erklaerung:"Sinkende Nachfrage führt zu weniger Produktion und damit zu Entlassungen."},
+ {thema:"vwl", frage:"Die Zentralbank senkt den Leitzins. Welche Kettenreaktion ist logisch?", antworten:["Kredite werden günstiger → Investitionen steigen → Produktion wächst → Beschäftigung steigt","Kredite werden teurer → Investitionen steigen → Beschäftigung sinkt","Sparen lohnt sich mehr → Konsum steigt → Preise sinken","Investitionen sinken → Beschäftigung steigt → Nachfrage sinkt"], richtigeAntwort:0, erklaerung:"Niedrige Zinsen verbilligen Kredite und regen Investitionen und Konsum an."},
+ {thema:"vwl", frage:"Was misst das Bruttoinlandsprodukt?", antworten:["Den Wert aller in einem Jahr im Inland hergestellten Waren und Dienstleistungen","Die Höhe der Staatsschulden","Die Zahl der Erwerbstätigen","Die Summe aller Exporte"], richtigeAntwort:0, erklaerung:"Das BIP ist der wichtigste Maßstab für die Wirtschaftsleistung eines Landes."},
+ {thema:"vwl", frage:"Welche Maßnahme gehört zur Sozialpolitik?", antworten:["Erhöhung des Kindergelds","Senkung des Leitzinses","Bau einer Autobahn","Einführung eines Zolls"], richtigeAntwort:0, erklaerung:"Kindergeld unterstützt Familien und ist damit eine sozialpolitische Leistung."}
+]},
+
+{ id:"ap-s25", art:"abschluss", termin:"Sommer 2025", titel:"Wirtschafts- und Sozialkunde", minuten:60, fragen:[
+ {thema:"vwl", frage:"Welche Zuordnung von Tätigkeit und Wirtschaftsbereich ist richtig?", antworten:["Fischer – Urproduktion","Bäckerei – Dienstleistung","Hotel – Weiterverarbeitung","Brauerei – Urproduktion"], richtigeAntwort:0, erklaerung:"Urproduktion gewinnt Rohstoffe (Landwirtschaft, Fischerei). Bäckerei und Brauerei verarbeiten weiter, Hotels erbringen Dienstleistungen."},
+ {thema:"ausbildung", situation:"Ella Krüger beginnt am 01.09.2025 eine dreijährige Ausbildung im Hotel Am Stadtpark.", frage:"Welche Probezeit ist in einer Berufsausbildung zulässig?", antworten:["Mindestens 1, höchstens 4 Monate","Genau 6 Monate","Höchstens 2 Wochen","Mindestens 6 Monate"], richtigeAntwort:0, erklaerung:"§ 20 BBiG: mindestens einen, höchstens vier Monate."},
+ {thema:"ausbildung", frage:"Ella beginnt am 01.09.2025 eine dreijährige Ausbildung. Welches Enddatum wird in ihren Ausbildungsvertrag eingetragen?", antworten:["31.07.2028","31.08.2028","01.09.2028","31.08.2027"], richtigeAntwort:1, erklaerung:"Drei Jahre ab 01.09.2025 enden am 31.08.2028. Wird die Prüfung früher bestanden, endet die Ausbildung bereits mit Bekanntgabe des Ergebnisses."},
+ {thema:"ausbildung", frage:"Welche Regelung gilt nach dem Berufsbildungsgesetz?", antworten:["Der Betrieb muss Ella für den Berufsschulunterricht freistellen.","Ella muss Ausbildungsmittel selbst bezahlen.","Berufsschulzeit muss nachgearbeitet werden.","Der Betrieb darf beliebig ausbildungsfremde Arbeiten anordnen."], richtigeAntwort:0, erklaerung:"Freistellung für die Berufsschule ist Pflicht (§ 15 BBiG); Ausbildungsmittel sind kostenlos, ausbildungsfremde Arbeiten unzulässig."},
+ {thema:"ausbildung", frage:"Wo ist festgelegt, was im Betrieb und was in der Berufsschule vermittelt wird?", antworten:["Ausbildungsrahmenplan (Betrieb) und Rahmenlehrplan (Berufsschule)","Tarifvertrag und Arbeitsvertrag","Betriebsvereinbarung und Hausordnung","Handelsregister und Gewerbeordnung"], richtigeAntwort:0, erklaerung:"Der Ausbildungsrahmenplan gehört zur Ausbildungsordnung, der Rahmenlehrplan wird von der Kultusministerkonferenz erlassen."},
+ {thema:"ausbildung", frage:"Vier gleich gewichtete Prüfungsbereiche: 78, 85, 64 und 81 Punkte. Wie hoch ist das Gesamtergebnis?", antworten:["75 Punkte","77 Punkte","79 Punkte","81 Punkte"], richtigeAntwort:1, erklaerung:"(78 + 85 + 64 + 81) ÷ 4 = 308 ÷ 4 = 77 Punkte."},
+ {thema:"arbeitsrecht", frage:"Womit verstoßen Sie gegen Ihre Pflichten als Arbeitnehmer?", antworten:["Sie geben Gästedaten privat an Bekannte weiter.","Sie melden eine Erkrankung sofort.","Sie besuchen als Auszubildende die Berufsschule.","Sie nehmen genehmigten Urlaub."], richtigeAntwort:0, erklaerung:"Die Weitergabe betrieblicher Daten verletzt Verschwiegenheits- und Datenschutzpflichten."},
+ {thema:"schutz", frage:"Was gilt für das Elterngeld?", antworten:["Seine Höhe richtet sich nach dem Nettoeinkommen vor der Geburt.","Alle erhalten einen festen Betrag von 800 €.","Nur Mütter haben Anspruch.","Es wird vom Arbeitgeber gezahlt."], richtigeAntwort:0, erklaerung:"Elterngeld ersetzt einen Teil des wegfallenden Nettoeinkommens; beide Elternteile können es beziehen."},
+ {thema:"schutz", frage:"Was darf die Gewerbeaufsicht in Ihrem Betrieb kontrollieren?", antworten:["Die Einhaltung von Arbeitszeit- und Arbeitsschutzvorschriften","Die Rechtschreibung der Speisekarte","Die Höhe der Gewinne","Das Privatleben der Beschäftigten"], richtigeAntwort:0, erklaerung:"Die Gewerbeaufsicht überwacht staatliche Arbeitsschutzvorschriften wie ArbZG, JArbSchG und MuSchG."},
+ {thema:"arbeitsrecht", frage:"Welche Anforderung in einer Stellenanzeige verstößt gegen das AGG?", antworten:["„Ausbildung als Koch/Köchin erforderlich“","„Bewerber nicht älter als 30 Jahre“","„Bereitschaft zur Wochenendarbeit“","„Englischkenntnisse von Vorteil“"], richtigeAntwort:1, erklaerung:"Eine Altersgrenze ohne sachlichen Grund benachteiligt wegen des Alters."},
+ {thema:"entgelt", frage:"Einem Mitarbeiter werden 245 € Lohnsteuer abgezogen; der Kirchensteuersatz beträgt 8 %. Wie hoch ist die Kirchensteuer?", antworten:["8,00 €","19,60 €","22,05 €","24,50 €"], richtigeAntwort:1, erklaerung:"Die Kirchensteuer bemisst sich an der Lohnsteuer: 8 % von 245 € = 19,60 € (8 % in Bayern und Baden-Württemberg, sonst 9 %)."},
+ {thema:"sozialvers", frage:"An wen muss ein Arbeitsunfall mit mehr als drei Tagen Arbeitsunfähigkeit gemeldet werden?", antworten:["An die Berufsgenossenschaft","An die Krankenkasse","An die IHK","An das Ordnungsamt"], richtigeAntwort:0, erklaerung:"Zuständig ist der Träger der gesetzlichen Unfallversicherung."},
+ {thema:"sozialvers", frage:"Innerhalb welcher Frist muss der Arbeitgeber einen meldepflichtigen Arbeitsunfall anzeigen?", antworten:["Drei Tage","Eine Woche","Zwei Wochen","Ein Monat"], richtigeAntwort:0, erklaerung:"Die Unfallanzeige ist binnen drei Tagen nach Kenntnis zu erstatten (§ 193 SGB VII)."},
+ {thema:"sozialvers", frage:"Eine Mitarbeiterin will gegen die Ablehnung einer Unfallrente klagen. Welches Gericht ist zuständig?", antworten:["Arbeitsgericht","Sozialgericht","Amtsgericht","Verwaltungsgericht"], richtigeAntwort:1, erklaerung:"Streitigkeiten mit Sozialversicherungsträgern entscheidet das Sozialgericht."},
+ {thema:"arbeitsrecht", frage:"Wer genießt besonderen gesetzlichen Kündigungsschutz?", antworten:["Ein Mitglied des Betriebsrats","Ein Mitarbeiter in der Probezeit","Eine Aushilfe ohne besondere Merkmale","Ein Mitarbeiter kurz vor Ende seiner Befristung"], richtigeAntwort:0, erklaerung:"Betriebsratsmitglieder, Schwangere, Schwerbehinderte und Beschäftigte in Elternzeit sind besonders geschützt."},
+ {thema:"nachhaltigkeit", frage:"Welche Maßnahme schützt die Umwelt am wirksamsten?", antworten:["Mehrwegbecher für Kaffee zum Mitnehmen","Butter in Portionspackungen","Aktionen mit Einweggrills","Täglich neue Papiertischdecken"], richtigeAntwort:0, erklaerung:"Mehrweg vermeidet Abfall; die anderen Maßnahmen erzeugen zusätzlichen Müll."},
+ {thema:"weiterbildung", frage:"In welcher Gruppe sind alle Länder Mitglied der EU (Stand 2026)?", antworten:["Portugal, Irland, Slowenien, Finnland","Norwegen, Schweden, Dänemark, Finnland","Schweiz, Österreich, Italien, Frankreich","Island, Irland, Malta, Zypern"], richtigeAntwort:0, erklaerung:"Norwegen, die Schweiz und Island gehören nicht zur EU."},
+ {thema:"sozialvers", frage:"Eine Mitarbeiterin pflegt zu Hause ihren Vater. Wo wird Pflegegeld beantragt?", antworten:["Bei der Pflegekasse","Bei der Berufsgenossenschaft","Bei der Rentenversicherung","Beim Arbeitgeber"], richtigeAntwort:0, erklaerung:"Die Pflegekasse – angesiedelt bei der Krankenkasse – zahlt Pflegegeld bei häuslicher Pflege."},
+ {thema:"sozialvers", frage:"Nach einem Arbeitsunfall kann ein Koch seinen Beruf nicht mehr ausüben und wird umgeschult. Wer trägt die Kosten vorrangig?", antworten:["Die Berufsgenossenschaft","Die Krankenkasse","Der Arbeitgeber","Die IHK"], richtigeAntwort:0, erklaerung:"Bei Arbeitsunfällen übernimmt die Unfallversicherung auch Leistungen zur Teilhabe am Arbeitsleben."},
+ {thema:"sozialvers", frage:"Sie beschädigen versehentlich das Smartphone eines Freundes. Welche private Versicherung zahlt?", antworten:["Hausratversicherung","Private Haftpflichtversicherung","Berufsunfähigkeitsversicherung","Rechtsschutzversicherung"], richtigeAntwort:1, erklaerung:"Die Haftpflicht ersetzt Schäden, die Sie anderen zufügen."},
+ {thema:"sozialvers", frage:"Warum wurde das Renteneintrittsalter schrittweise auf 67 angehoben?", antworten:["Die Lebenserwartung steigt und Renten werden länger bezogen.","Es gibt zu viele junge Beitragszahler.","Um die Löhne zu senken.","Weil die Rentenversicherung Überschüsse erzielt."], richtigeAntwort:0, erklaerung:"Längere Rentenbezugsdauer und weniger Beitragszahler belasten die Rentenkasse."},
+ {thema:"nachhaltigkeit", frage:"Ein Hotel stellt auf Bio-Produkte um, obwohl dadurch die Preise steigen. Welcher Zielkonflikt kann entstehen?", antworten:["Zwischen ökologischen und ökonomischen Zielen","Zwischen sozialen und rechtlichen Zielen","Es entsteht kein Zielkonflikt.","Zwischen Steuer- und Zollrecht"], richtigeAntwort:0, erklaerung:"Umweltschutz kann höhere Kosten und damit weniger Gewinn oder Nachfrage bedeuten."},
+ {thema:"unternehmen", frage:"Wie wird der Gewinn einer GmbH verteilt, wenn der Gesellschaftsvertrag nichts anderes bestimmt?", antworten:["Nach Köpfen","Nach dem Verhältnis der Geschäftsanteile","Nur an den Geschäftsführer","Nach Betriebszugehörigkeit"], richtigeAntwort:1, erklaerung:"§ 29 GmbHG: Verteilung nach dem Verhältnis der Geschäftsanteile."},
+ {thema:"vwl", frage:"Was ist ein Bedürfnis?", antworten:["Das Gefühl eines Mangels mit dem Wunsch, ihn zu beseitigen","Die mit Kaufkraft verbundene Nachfrage","Ein knappes Gut","Ein Gut, das im Überfluss vorhanden ist"], richtigeAntwort:0, erklaerung:"Aus Bedürfnissen werden mit Kaufkraft Bedarf und mit Kaufabsicht Nachfrage."},
+ {thema:"vwl", frage:"Welche staatliche Maßnahme zählt zur Sozialpolitik?", antworten:["Wohngeld für Haushalte mit geringem Einkommen","Ausbau des Glasfasernetzes","Senkung der Unternehmenssteuer","Exportförderung"], richtigeAntwort:0, erklaerung:"Wohngeld sichert angemessenes Wohnen für Geringverdienende."},
+ {thema:"vwl", frage:"Mit welcher Maßnahme kann der Staat die Wirtschaft ankurbeln?", antworten:["Mehr öffentliche Investitionen, z. B. in die Infrastruktur","Steuern deutlich erhöhen","Staatsausgaben stark kürzen","Abgaben für Unternehmen erhöhen"], richtigeAntwort:0, erklaerung:"Staatliche Investitionen schaffen Nachfrage und Aufträge (antizyklische Fiskalpolitik)."}
+]},
+
+{ id:"ap-w2526", art:"abschluss", termin:"Winter 2025/26", titel:"Wirtschafts- und Sozialkunde", minuten:60, fragen:[
+ {thema:"ausbildung", situation:"Jonas Pfeiffer (16) beginnt eine Ausbildung in der Hotel Bergblick GmbH.", frage:"Was ist im Berufsbildungsgesetz geregelt?", antworten:["Die Dauer der Probezeit in der Ausbildung","Die Berufsschulpflicht","Die konkreten Prüfungsinhalte eines Berufs","Die Höhe des Mindestlohns"], richtigeAntwort:0, erklaerung:"Die Berufsschulpflicht regeln die Länder, Prüfungsinhalte die Ausbildungsordnung, den Mindestlohn das Mindestlohngesetz."},
+ {thema:"ausbildung", frage:"Welche Vereinbarung im Ausbildungsvertrag wäre unzulässig?", antworten:["Jonas zahlt bei vorzeitigem Abbruch 500 € Schadenspauschale.","Die Probezeit beträgt drei Monate.","Die Vergütung wird monatlich gezahlt.","Jonas führt einen Ausbildungsnachweis."], richtigeAntwort:0, erklaerung:"Pauschalierte Schadensersatzansprüche sind nach § 12 BBiG nichtig."},
+ {thema:"schutz", frage:"Jonas ist bei Ausbildungsbeginn 16 Jahre alt. Welche Unterlage muss er vor Beginn der Ausbildung vorlegen?", antworten:["Bescheinigung über die ärztliche Erstuntersuchung","Polizeiliches Führungszeugnis","Gesellenbrief","Sozialversicherungsausweis der Eltern"], richtigeAntwort:0, erklaerung:"Jugendliche dürfen nur beschäftigt werden, wenn eine Erstuntersuchung vorliegt (§ 32 JArbSchG)."},
+ {thema:"ausbildung", frage:"Warum muss der Ausbildungsnachweis lückenlos geführt werden?", antworten:["Er ist Voraussetzung für die Zulassung zur Abschlussprüfung.","Er ersetzt das Abschlusszeugnis.","Mit ihm wird die Vergütung berechnet.","Er wird an die Krankenkasse geschickt."], richtigeAntwort:0, erklaerung:"Ohne geführten Ausbildungsnachweis keine Zulassung (§ 43 BBiG)."},
+ {thema:"entgelt", situation:"Angenommen, die gesetzliche Mindestvergütung beträgt im 1. Ausbildungsjahr 700 €. Sie steigt im 2. Jahr um 18 % und im 3. Jahr um 35 %, jeweils bezogen auf das 1. Jahr.", frage:"Welchen Betrag muss der Auszubildende Jonas im 3. Ausbildungsjahr mindestens erhalten?", antworten:["826 €","945 €","980 €","1.050 €"], richtigeAntwort:1, erklaerung:"700 € × 1,35 = 945 € (§ 17 BBiG: +18 % im 2., +35 % im 3., +40 % im 4. Jahr)."},
+ {thema:"ausbildung", frage:"Wer entscheidet, ob das Hotel in einem neuen Beruf ausbilden darf?", antworten:["Die zuständige Stelle (IHK)","Die Berufsschule","Die Gewerkschaft","Das Gesundheitsamt"], richtigeAntwort:0, erklaerung:"Die zuständige Stelle prüft die Eignung von Betrieb und Ausbilder."},
+ {thema:"ausbildung", frage:"Was kann das Hotel tun, wenn es nicht alle Ausbildungsinhalte selbst vermitteln kann?", antworten:["Eine Verbundausbildung mit einem Partnerbetrieb vereinbaren","Die fehlenden Inhalte weglassen","Die Ausbildung um ein Jahr verlängern","Die Inhalte nur in der Berufsschule prüfen lassen"], richtigeAntwort:0, erklaerung:"Fehlende Inhalte können durch Ausbildungsmaßnahmen außerhalb der Ausbildungsstätte vermittelt werden (§ 27 BBiG)."},
+ {thema:"arbeitsrecht", frage:"Was muss der Arbeitgeber nach dem Nachweisgesetz schriftlich festhalten?", antworten:["Zusammensetzung und Höhe des Arbeitsentgelts","Die Hobbys der Arbeitnehmerin","Die Religionszugehörigkeit","Die Namen der Kollegen"], richtigeAntwort:0, erklaerung:"Wesentliche Vertragsbedingungen wie Entgelt, Arbeitszeit, Urlaub und Kündigungsfristen sind schriftlich niederzulegen."},
+ {thema:"entgelt", frage:"Welche Angaben muss eine neue Mitarbeiterin dem Arbeitgeber für die Entgeltabrechnung mitteilen?", antworten:["Steuer-ID, Sozialversicherungsnummer und Krankenkasse","Schulnoten, Hobbys und Blutgruppe","Kontostand, Schufa-Score und Parteizugehörigkeit","Führerscheinklasse und Schuhgröße"], richtigeAntwort:0, erklaerung:"Mit diesen Daten kann der Arbeitgeber Lohnsteuer (ELStAM) und Sozialversicherung korrekt abführen."},
+ {thema:"schutz", frage:"Wie lange dauert die Mutterschutzfrist bei einer normalen Einzelgeburt?", antworten:["6 Wochen vor und 8 Wochen nach der Geburt","4 Wochen vor und 4 Wochen nach der Geburt","8 Wochen vor und 6 Wochen nach der Geburt","12 Wochen nach der Geburt"], richtigeAntwort:0, erklaerung:"§ 3 MuSchG; bei Früh- und Mehrlingsgeburten verlängert sich die Frist nach der Geburt auf 12 Wochen."},
+ {thema:"arbeitsrecht", frage:"In welchem Fall ist eine fristlose Kündigung ohne Abmahnung möglich?", antworten:["Ein Mitarbeiter nimmt Geld aus der Kasse.","Ein Mitarbeiter kommt einmal fünf Minuten zu spät.","Eine Mitarbeiterin ist krank.","Ein Mitarbeiter tritt einer Gewerkschaft bei."], richtigeAntwort:0, erklaerung:"Diebstahl zerstört das Vertrauensverhältnis und ist ein wichtiger Grund nach § 626 BGB."},
+ {thema:"sozialvers", frage:"Welche Zuordnung von Leistung und Versicherung ist richtig?", antworten:["Krankengeld – Krankenversicherung","Kurzarbeitergeld – Rentenversicherung","Pflegegeld – Unfallversicherung","Erwerbsminderungsrente – Arbeitslosenversicherung"], richtigeAntwort:0, erklaerung:"Kurzarbeitergeld zahlt die Arbeitslosenversicherung, Pflegegeld die Pflegeversicherung, die Erwerbsminderungsrente die Rentenversicherung."},
+ {thema:"sozialvers", frage:"Renten werden heute länger bezogen als früher. Welche Folge hat das?", antworten:["Die Ausgaben der Rentenversicherung steigen.","Die Beiträge sinken automatisch.","Die Zahl der Beitragszahler steigt.","Die Rentenversicherung erzielt Überschüsse."], richtigeAntwort:0, erklaerung:"Längere Bezugsdauer bedeutet höhere Gesamtausgaben pro Rentner."},
+ {thema:"sozialvers", frage:"Welches Ziel verfolgt das Hotel mit einer betrieblichen Altersvorsorge?", antworten:["Mitarbeitende langfristig an den Betrieb binden","Die gesetzliche Rente ersetzen","Die Steuern der Mitarbeitenden erhöhen","Die Probezeit verlängern"], richtigeAntwort:0, erklaerung:"Betriebsrenten machen den Arbeitgeber attraktiv und fördern die Bindung."},
+ {thema:"entgelt", situation:"Servicekraft Lea Kramer heiratet. Ihr Mann verdient deutlich mehr als sie.", frage:"Welche Steuerklassenkombination bringt dem Paar nach der Rechtslage 2026 monatlich das höchste gemeinsame Netto?", antworten:["III für den Ehemann, V für Lea","IV / IV","I / I","V für den Ehemann, III für Lea"], richtigeAntwort:0, erklaerung:"Der Besserverdienende nimmt Klasse III mit den höheren Freibeträgen."},
+ {thema:"verbraucher", frage:"Die Tischdekoration für Leas Hochzeit kostet 480 €; sie erhält 15 % Rabatt. Wie viel spart sie?", antworten:["48 €","64 €","72 €","408 €"], richtigeAntwort:2, erklaerung:"15 % von 480 € = 72 €. Sie zahlt also 408 €."},
+ {thema:"weiterbildung", frage:"In welchem Mittelmeerland ist der Euro kein gesetzliches Zahlungsmittel (Stand 2026)?", antworten:["Kroatien","Malta","Türkei","Griechenland"], richtigeAntwort:2, erklaerung:"In der Türkei gilt die Türkische Lira; Kroatien führte den Euro 2023 ein."},
+ {thema:"arbeitsrecht", frage:"Lea beginnt am 01.08.2025; vereinbart sind 30 Urlaubstage pro Jahr. Wie viele Tage stehen ihr für 2025 zu?", antworten:["10","12,5","13","30"], richtigeAntwort:2, erklaerung:"Die Wartezeit von sechs Monaten wird 2025 nicht erfüllt: je vollem Monat 1/12, also 5/12 × 30 = 12,5. Bruchteile ab einem halben Tag werden aufgerundet (§ 5 BUrlG)."},
+ {thema:"mitbestimmung", frage:"Servicekraft Lea tritt einer Gewerkschaft bei. Welche Aufgabe haben Gewerkschaften?", antworten:["Tarifverträge mit Arbeitgebern aushandeln","Gesetze erlassen","Abschlussprüfungen abnehmen","Unfallrenten zahlen"], richtigeAntwort:0, erklaerung:"Gewerkschaften vertreten die Interessen ihrer Mitglieder, vor allem in Tarifverhandlungen."},
+ {thema:"mitbestimmung", frage:"Welche Voraussetzung muss für die Wahl eines Betriebsrats erfüllt sein?", antworten:["Mindestens fünf ständige wahlberechtigte Arbeitnehmer, davon drei wählbar","Mindestens 50 Beschäftigte","Zustimmung des Arbeitgebers","Alle Beschäftigten sind Gewerkschaftsmitglied"], richtigeAntwort:0, erklaerung:"§ 1 BetrVG; der Arbeitgeber muss nicht zustimmen."},
+ {thema:"unternehmen", frage:"Welche Aufgabe hat ein Datenschutzbeauftragter?", antworten:["Die Einhaltung der Datenschutzvorschriften überwachen und Beschäftigte schulen","Gästedaten an Werbepartner verkaufen","Die Buchhaltung führen","Personal einstellen"], richtigeAntwort:0, erklaerung:"Er berät, schult und überwacht die Einhaltung der DSGVO (Art. 39 DSGVO)."},
+ {thema:"unternehmen", frage:"Ein neuer Geschäftsführer wird ins Handelsregister eingetragen. Wer führt das Handelsregister?", antworten:["Das Amtsgericht","Die IHK","Das Finanzamt","Das Gewerbeamt"], richtigeAntwort:0, erklaerung:"Das Handelsregister wird elektronisch beim Amtsgericht geführt."},
+ {thema:"unternehmen", frage:"Welcher Aspekt spielt bei der Standortwahl für ein Bistro keine Rolle?", antworten:["Passantenfrequenz","Mietpreis","Konkurrenz in der Nähe","Geburtsort der Gründerin"], richtigeAntwort:3, erklaerung:"Standortfaktoren sind wirtschaftlich relevant – persönliche Herkunft gehört nicht dazu."},
+ {thema:"unternehmen", frage:"Für die Gründung brauchen Sie einen Kredit. Welche Reihenfolge ist logisch?", antworten:["Kapitalbedarf ermitteln → Angebote vergleichen → Kreditantrag und Bonitätsprüfung → Kreditvertrag → Auszahlung → Tilgung","Auszahlung → Kreditvertrag → Kapitalbedarf ermitteln → Tilgung","Kreditvertrag → Angebote vergleichen → Kapitalbedarf ermitteln → Auszahlung","Tilgung → Auszahlung → Kreditantrag → Kreditvertrag"], richtigeAntwort:0, erklaerung:"Erst den Bedarf kennen, dann vergleichen, beantragen, unterschreiben, auszahlen lassen und zurückzahlen."},
+ {thema:"verbraucher", situation:"Paul kauft eine Jacke im Onlineshop der Modehaus Krämer GmbH.", frage:"Welchen Vorteil hat ein Vergleich auf einem Testportal für Paul?", antworten:["Mehr Markttransparenz","Garantie auf den niedrigsten Preis","Verlängerte Gewährleistung","Das Widerrufsrecht wird überflüssig"], richtigeAntwort:0, erklaerung:"Vergleiche schaffen Überblick über Qualität und Preise."},
+ {thema:"verbraucher", frage:"Welche Pflicht hat Paul als Käufer?", antworten:["Den Kaufpreis zahlen und die Ware abnehmen","Die Ware versichern","Das Eigentum verschaffen","Die mangelfreie Lieferung sicherstellen"], richtigeAntwort:0, erklaerung:"§ 433 Abs. 2 BGB."},
+ {thema:"unternehmen", frage:"Der Händler gewährt 15 % Aktionsrabatt. Was ist ein möglicher Grund?", antworten:["Absatz steigern und Lagerbestände abbauen","Umsatzsteuer senken","Rabatte sind gesetzlich vorgeschrieben","Kunden das Widerrufsrecht nehmen"], richtigeAntwort:0, erklaerung:"Rabatte sind ein Mittel der Verkaufsförderung."},
+ {thema:"verbraucher", frage:"Wie viele Tage beträgt Pauls Widerrufsfrist bei ordnungsgemäßer Belehrung?", antworten:["7","14","21","30"], richtigeAntwort:1, erklaerung:"14 Tage ab Erhalt der Ware."},
+ {thema:"vwl", frage:"Welche Auswirkung kann die Globalisierung auf ein deutsches Hotelunternehmen haben?", antworten:["Mehr internationale Gäste, aber auch stärkerer Wettbewerb","Keinerlei Auswirkungen","Verbot ausländischer Beschäftigter","Wegfall aller Zölle weltweit"], richtigeAntwort:0, erklaerung:"Offene Märkte bringen Chancen (Gäste, Beschaffung) und Risiken (Konkurrenz)."}
+]},
+
+{ id:"ap-s26", art:"abschluss", termin:"Sommer 2026", titel:"Wirtschafts- und Sozialkunde", minuten:60, fragen:[
+ {thema:"ausbildung", situation:"Sophie Brandt (17) soll ab 01.09.2026 in der Hotel Seerose GmbH ausgebildet werden.", frage:"Wer muss den Ausbildungsvertrag unterschreiben?", antworten:["Ausbildender, Sophie und ihre gesetzlichen Vertreter","Nur Sophie","Nur der Ausbildende","Berufsschule und IHK"], richtigeAntwort:0, erklaerung:"Bei Minderjährigen unterschreiben zusätzlich die gesetzlichen Vertreter (§ 11 BBiG)."},
+ {thema:"ausbildung", frage:"Welche Aussage zur Probezeit in der Ausbildung ist richtig?", antworten:["Sie dient der Prüfung, ob Sophie für den Beruf geeignet ist; Mindest- und Höchstdauer regelt das BBiG.","Sie ist freiwillig.","Sie beträgt immer sechs Monate.","In der Probezeit gilt eine Kündigungsfrist von vier Wochen."], richtigeAntwort:0, erklaerung:"Die Probezeit ist Pflicht (1–4 Monate); beide Seiten können in ihr jederzeit ohne Frist kündigen."},
+ {thema:"ausbildung", frage:"Wie heißt die Ausbildung an den Lernorten Betrieb und Berufsschule?", antworten:["Duale Berufsausbildung","Überbetriebliche Ausbildung","Lernfeldausbildung","Berufsgrundbildungsjahr"], richtigeAntwort:0, erklaerung:"„Dual“ bezeichnet die zwei Lernorte."},
+ {thema:"entgelt", frage:"Die Auszubildende Sophie beginnt ihre Ausbildung. Welche Angaben braucht der Arbeitgeber, um ihr Nettoentgelt korrekt zu berechnen?", antworten:["Ihre elektronischen Lohnsteuerabzugsmerkmale (ELStAM) und ihre Krankenkasse","Ihr letztes Schulzeugnis und ihre IBAN","Ihre Gewerkschaftsmitgliedsnummer","Ihren Schwimmausweis"], richtigeAntwort:0, erklaerung:"Steuermerkmale und Krankenkasse (Zusatzbeitrag) bestimmen die Abzüge; die IBAN dient nur der Auszahlung."},
+ {thema:"entgelt", situation:"Sophies Abrechnung (Brutto 1.100 €): KV 7,3 % = 80,30 €; PV 1,8 % = 19,80 €; RV 9,3 % = 103,20 €; AV 1,3 % = 14,30 €.", frage:"Welche Position ist falsch berechnet?", antworten:["Krankenversicherung","Pflegeversicherung","Rentenversicherung","Arbeitslosenversicherung"], richtigeAntwort:2, erklaerung:"9,3 % von 1.100 € sind 102,30 € – nicht 103,20 €."},
+ {thema:"ausbildung", frage:"Welche Reihenfolge ist richtig?", antworten:["Ärztliche Erstuntersuchung → Ausbildungsbeginn → Abschlussprüfung Teil 1 → Teil 2","Ausbildungsbeginn → Erstuntersuchung → Teil 2 → Teil 1","Teil 1 → Ausbildungsbeginn → Erstuntersuchung → Teil 2","Ausbildungsbeginn → Teil 1 → Erstuntersuchung → Teil 2"], richtigeAntwort:0, erklaerung:"Die Erstuntersuchung muss vor Beginn vorliegen; Teil 1 liegt etwa in der Mitte der Ausbildung."},
+ {thema:"schutz", frage:"Die Auszubildende Sophie ist 17 Jahre alt und hat Dienst von 9:00 bis 18:00 Uhr (Schichtzeit inklusive Pausen). Wie viele Minuten Pause stehen ihr mindestens zu?", antworten:["30","45","60","90"], richtigeAntwort:2, erklaerung:"Bei 9 Stunden Schichtzeit bleiben nach 60 Minuten Pause 8 Stunden Arbeit – mehr als sechs Stunden, also 60 Minuten (§ 11 JArbSchG)."},
+ {thema:"sozialvers", frage:"Die Auszubildende Sophie verletzt sich bei der Arbeit beim Einräumen im Lager. Wer trägt die Behandlungskosten?", antworten:["Die Berufsgenossenschaft","Ihre Krankenkasse","Die Rentenversicherung","Die Haftpflicht des Arbeitgebers"], richtigeAntwort:0, erklaerung:"Arbeitsunfälle sind Sache der gesetzlichen Unfallversicherung."},
+ {thema:"schutz", frage:"Welches Zeichen warnt vor Rutschgefahr nach dem Wischen?", antworten:["Gelbes Dreieck mit einer ausrutschenden Person","Grünes Rechteck mit laufender Person und Pfeil","Blauer Kreis mit Handschuh","Roter Kreis mit durchgestrichener Zigarette"], richtigeAntwort:0, erklaerung:"Warnzeichen sind gelbe Dreiecke; grün kennzeichnet Rettungswege, blau Gebote, rot Verbote."},
+ {thema:"ausbildung", frage:"Wo findet Sophie die genaue Kündigungsfrist für Auszubildende?", antworten:["Im Berufsbildungsgesetz","Im Jugendarbeitsschutzgesetz","Im Ausbildungsrahmenplan","Im Arbeitszeitgesetz"], richtigeAntwort:0, erklaerung:"§ 22 BBiG: nach der Probezeit vier Wochen Frist bei Berufsaufgabe oder -wechsel."},
+ {thema:"ausbildung", frage:"Die Auszubildende Sophie (17) kündigt nach der Probezeit, weil sie einen anderen Beruf lernen will. Was muss in der Kündigung stehen?", antworten:["Der Kündigungsgrund","Der neue Ausbildungsbetrieb","Der bisher genommene Urlaub","Ihre Berufsschulnoten"], richtigeAntwort:0, erklaerung:"Nach der Probezeit muss die Kündigung schriftlich und unter Angabe der Gründe erfolgen."},
+ {thema:"arbeitsrecht", frage:"Welche Formulierung findet sich nur in einem qualifizierten Zeugnis?", antworten:["„Sie erledigte die übertragenen Aufgaben stets zu unserer vollsten Zufriedenheit.“","„Frau Brandt, geboren am …“","„… wurde vom … bis … zur Hotelfachfrau ausgebildet.“","„Hotel Seerose GmbH, Lindau, den …“"], richtigeAntwort:0, erklaerung:"Leistungs- und Verhaltensbeurteilungen kennzeichnen das qualifizierte Zeugnis."},
+ {thema:"arbeitsrecht", frage:"Die ehemalige Auszubildende Sophie will auf Berichtigung ihres Zeugnisses klagen. Welches Gericht ist zuständig?", antworten:["Arbeitsgericht","Amtsgericht","Landgericht","Sozialgericht"], richtigeAntwort:0, erklaerung:"Auch Streitigkeiten aus dem Ausbildungsverhältnis gehören vor das Arbeitsgericht."},
+ {thema:"arbeitsrecht", situation:"Herr Kowalski ist seit einem Jahr angestellt und erhält eine ordentliche Kündigung mit gesetzlicher Frist (4 Wochen zum 15. oder zum Monatsende). Zugang: Dienstag, 20.10.2026.", frage:"Mit Ablauf welchen Tages endet das Arbeitsverhältnis?", antworten:["15.11.2026","17.11.2026","30.11.2026","15.12.2026"], richtigeAntwort:2, erklaerung:"Vier Wochen ab 20.10. reichen bis 17.11.; der nächste zulässige Termin ist der 30.11.2026."},
+ {thema:"weiterbildung", frage:"Welche Reihenfolge bei einem Stellenwechsel ist logisch?", antworten:["Unterlagen zusammenstellen → bewerben → Vorstellungsgespräch → Arbeitsvertrag → Probezeit","Arbeitsvertrag → bewerben → Vorstellungsgespräch → Unterlagen","Vorstellungsgespräch → Unterlagen → Probezeit → bewerben","Probezeit → Arbeitsvertrag → bewerben → Gespräch"], richtigeAntwort:0, erklaerung:"Der Ablauf folgt der Logik der Personalauswahl."},
+ {thema:"arbeitsrecht", frage:"In welchem Fall wird gegen das AGG verstoßen?", antworten:["Eine Bewerberin wird wegen ihrer Religion abgelehnt.","Ein Bewerber wird wegen fehlender Fachkenntnisse abgelehnt.","Ein Koch wird wegen Rauchens in der Küche abgemahnt.","Nachtarbeit wird mit einem Zuschlag vergütet."], richtigeAntwort:0, erklaerung:"Religion ist ein geschütztes Merkmal nach § 1 AGG."},
+ {thema:"schutz", frage:"Eine Mitarbeiterin hat vor zwei Wochen entbunden und möchte wieder arbeiten. Was gilt?", antworten:["Sie darf in den ersten acht Wochen nach der Geburt nicht beschäftigt werden.","Sie darf sofort arbeiten, wenn sie zustimmt.","Sie darf nach vier Wochen arbeiten.","Sie muss zwölf Monate pausieren."], richtigeAntwort:0, erklaerung:"Nach der Geburt gilt ein absolutes Beschäftigungsverbot – auch mit Einverständnis der Mutter."},
+ {thema:"mitbestimmung", frage:"Wobei hat der Betriebsrat ein echtes Mitbestimmungsrecht?", antworten:["Beginn und Ende der täglichen Arbeitszeit","Preise auf der Speisekarte","Auswahl der Lieferanten","Verwendung des Gewinns"], richtigeAntwort:0, erklaerung:"Soziale Angelegenheiten wie Arbeitszeitlage unterliegen der Mitbestimmung (§ 87 BetrVG), wirtschaftliche Entscheidungen nicht."},
+ {thema:"weiterbildung", frage:"Welche Entwicklung kennzeichnet den Wandel der Arbeitswelt?", antworten:["Digitale Kompetenzen werden wichtiger.","Homeoffice ist überall verboten.","Weiterbildung wird überflüssig.","Alle Berufe bleiben unverändert."], richtigeAntwort:0, erklaerung:"Digitalisierung verändert Abläufe – etwa Kassensysteme, Online-Reservierungen und Warenwirtschaft."},
+ {thema:"sozialvers", situation:"Frau Nowak vergleicht Zahnzusatzversicherungen: Tarif Basis 11,40 € im Monat, Tarif Plus 18,90 € im Monat.", frage:"Um wie viel € im Jahr ist Tarif Plus teurer?", antworten:["7,50 €","75,00 €","90,00 €","135,00 €"], richtigeAntwort:2, erklaerung:"(18,90 € − 11,40 €) × 12 = 90,00 €."},
+ {thema:"sozialvers", frage:"Welche Leistung ergänzt eine Zahnzusatzversicherung?", antworten:["Die Leistungen der gesetzlichen Krankenversicherung beim Zahnersatz","Die gesetzliche Rente","Das Arbeitslosengeld","Die Leistungen der Berufsgenossenschaft"], richtigeAntwort:0, erklaerung:"Die gesetzliche Kasse zahlt bei Zahnersatz nur Festzuschüsse – die Zusatzversicherung deckt Teile des Eigenanteils."},
+ {thema:"nachhaltigkeit", frage:"Sie sind für den Einkauf zuständig. Womit tragen Sie zum Umweltschutz bei?", antworten:["Regionale und saisonale Ware mit kurzen Transportwegen bestellen","Getränke nur in Einwegflaschen beziehen","Kleinste Mengen täglich liefern lassen","Exotisches Obst per Luftfracht einkaufen"], richtigeAntwort:0, erklaerung:"Kurze Wege und saisonale Ware sparen Energie und Emissionen."},
+ {thema:"verbraucher", frage:"Ab welchem Alter ist man voll geschäftsfähig?", antworten:["7","14","16","18"], richtigeAntwort:3, erklaerung:"Mit der Volljährigkeit (18) tritt volle Geschäftsfähigkeit ein."},
+ {thema:"verbraucher", frage:"Ein Gastronom übernimmt eine eingerichtete Gaststätte gegen monatliches Entgelt und darf die Erträge behalten. Welche Vertragsart liegt vor?", antworten:["Mietvertrag","Pachtvertrag","Leihvertrag","Werkvertrag"], richtigeAntwort:1, erklaerung:"Die Pacht erlaubt neben dem Gebrauch auch die Fruchtziehung, also das Erwirtschaften von Erträgen."},
+ {thema:"verbraucher", frage:"Sie bestellen online eine Espressomaschine und möchten widerrufen. Welche Frist gilt ab Lieferung?", antworten:["7 Tage","14 Tage","30 Tage","2 Jahre"], richtigeAntwort:1, erklaerung:"14 Tage; zwei Jahre ist die Gewährleistungsfrist."},
+ {thema:"verbraucher", frage:"Welche Aussage zu Online-Vergleichsportalen ist richtig?", antworten:["Sie zeigen nicht immer alle Anbieter; Provisionen können die Reihenfolge beeinflussen.","Sie sind gesetzlich zur Vollständigkeit verpflichtet.","Sie garantieren immer den günstigsten Preis.","Sie übernehmen die Gewährleistung."], richtigeAntwort:0, erklaerung:"Portale finanzieren sich oft über Provisionen – kritisch vergleichen lohnt sich."},
+ {thema:"verbraucher", frage:"Drei Kolleginnen kaufen eine Maschine für 420 €, lösen einen Gutschein über 29,99 € ein und teilen den Rest gleichmäßig. Wie viel zahlt jede?", antworten:["129,99 €","130,00 €","140,00 €","150,00 €"], richtigeAntwort:1, erklaerung:"(420,00 € − 29,99 €) ÷ 3 = 390,01 € ÷ 3 ≈ 130,00 €."},
+ {thema:"verbraucher", frage:"Ein Onlineshop für Privatkunden wirbt mit „Espressomaschine 349 € zzgl. MwSt.“. Warum verstößt das gegen die Preisangabenverordnung?", antworten:["Gegenüber Verbrauchern ist der Gesamtpreis inklusive Umsatzsteuer anzugeben.","Preise dürfen nicht auf 9 enden.","Es fehlt der Herstellername.","Preise müssen in Dollar angegeben werden."], richtigeAntwort:0, erklaerung:"Verbraucher müssen den Endpreis sofort erkennen können."},
+ {thema:"verbraucher", frage:"Das Mahlwerk ist bei Lieferung defekt. Welches Recht haben Sie vorrangig?", antworten:["Nacherfüllung","Rücktritt","Minderung","Schadensersatz statt der Leistung"], richtigeAntwort:0, erklaerung:"Der Käufer wählt zwischen Reparatur und Ersatzlieferung; andere Rechte erst danach."},
+ {thema:"vwl", frage:"Womit wird das Wirtschaftswachstum gemessen?", antworten:["Mit der Veränderung des realen Bruttoinlandsprodukts","Mit der Arbeitslosenquote","Mit dem Leitzins","Mit der Inflationsrate"], richtigeAntwort:0, erklaerung:"Das reale BIP ist um Preissteigerungen bereinigt."},
+ {thema:"vwl", frage:"Welcher Indikator ist ein Frühindikator der Konjunktur?", antworten:["Auftragseingänge in der Industrie","Arbeitslosenquote","Steuereinnahmen des Vorjahres","Zahl der Insolvenzen im Vorjahr"], richtigeAntwort:0, erklaerung:"Auftragseingänge zeigen die künftige Produktion an; die Arbeitslosenquote reagiert dagegen verzögert (Spätindikator)."},
+ {thema:"vwl", frage:"Warum prüft das Bundeskartellamt die Fusion zweier großer Hotelketten?", antworten:["Um einen funktionierenden Wettbewerb zu erhalten","Um Steuern einzuziehen","Um Löhne festzulegen","Um Ausbildungsplätze zu verteilen"], richtigeAntwort:0, erklaerung:"Marktbeherrschende Stellungen schaden Verbrauchern durch höhere Preise und weniger Auswahl."}
+]},
+
+/* ---------------------------------------------------------------------
+   TESTPRÜFUNGEN (neu erstellt)
+   Aufbau wie echte WiSo-Prüfung: Situationsaufgaben, 13 Aufgaben, Mischung aus
+   Ausbildung, Arbeitsrecht, Schutzvorschriften, Entgelt/Sozialversicherung,
+   Mitbestimmung, Vertragsrecht, Unternehmen, Volkswirtschaft, Europa und Umwelt.
+   // FRAGEN HIER EINFÜGEN – weitere Testprüfungen als neues Objekt
+   --------------------------------------------------------------------- */
+{ id:"tp-1", art:"test", termin:"Testprüfung 1", titel:"Gemischter Aufgabensatz", minuten:26, fragen:[
+ {thema:"ausbildung", situation:"Marie Vogt macht eine Ausbildung in der Brauereigaststätte Zum Hopfen GmbH.", frage:"Wer trägt die Gebühren für Maries Abschlussprüfung?", antworten:["Der Ausbildungsbetrieb","Marie selbst","Die Berufsschule","Die Agentur für Arbeit"], richtigeAntwort:0, erklaerung:"Prüfungsgebühren gehören zu den Kosten der Ausbildung und werden vom Ausbildenden getragen."},
+ {thema:"ausbildung", frage:"Die Auszubildende Marie besteht Teil 2 der Abschlussprüfung am 18. Juni; ihr Vertrag läuft bis 31. Juli. Wann endet ihre Ausbildung?", antworten:["Mit der Bekanntgabe des Prüfungsergebnisses durch den Ausschuss","Am 31. Juli","Am 1. August","Wenn das Zeugnis per Post ankommt"], richtigeAntwort:0, erklaerung:"§ 21 Abs. 2 BBiG: Bei Bestehen vor Ablauf endet das Ausbildungsverhältnis mit der Bekanntgabe des Ergebnisses."},
+ {thema:"schutz", frage:"Bis wie viel Uhr darf ein 17-jähriger Auszubildender in einer Gaststätte höchstens beschäftigt werden?", antworten:["20:00 Uhr","22:00 Uhr","23:00 Uhr","24:00 Uhr"], richtigeAntwort:1, erklaerung:"Über 16-Jährige dürfen im Gaststättengewerbe bis 22 Uhr arbeiten (§ 14 Abs. 2 JArbSchG)."},
+ {thema:"schutz", frage:"Wie viele Stunden pro Woche dürfen Jugendliche höchstens arbeiten?", antworten:["35","40","45","48"], richtigeAntwort:1, erklaerung:"Höchstens 8 Stunden am Tag und 40 Stunden in der Woche (§ 8 JArbSchG)."},
+ {thema:"entgelt", situation:"Kellner Luca Brandl verdient 2.200 € brutto.", frage:"Wie hoch ist sein Arbeitnehmeranteil zur Arbeitslosenversicherung bei 2,6 % Gesamtbeitrag?", antworten:["22,00 €","26,40 €","28,60 €","57,20 €"], richtigeAntwort:2, erklaerung:"Arbeitnehmeranteil 1,3 % von 2.200 € = 28,60 €."},
+ {thema:"sozialvers", frage:"Wer zieht die Sozialversicherungsbeiträge vom Arbeitgeber ein?", antworten:["Die Krankenkasse als Einzugsstelle","Das Finanzamt","Die IHK","Die Gewerkschaft"], richtigeAntwort:0, erklaerung:"Die Krankenkasse sammelt den Gesamtsozialversicherungsbeitrag und leitet ihn an die anderen Träger weiter."},
+ {thema:"arbeitsrecht", frage:"Wie viele Werktage Urlaub stehen Erwachsenen nach dem Bundesurlaubsgesetz mindestens zu?", antworten:["20","24","26","30"], richtigeAntwort:1, erklaerung:"24 Werktage (Montag bis Samstag) – das entspricht 20 Arbeitstagen bei einer 5-Tage-Woche."},
+ {thema:"mitbestimmung", frage:"Was bedeutet Friedenspflicht?", antworten:["Während der Laufzeit eines Tarifvertrags sind Arbeitskämpfe über dessen Inhalte unzulässig.","Arbeitnehmer dürfen niemals streiken.","Arbeitgeber müssen Streikende weiterbezahlen.","Betriebsräte müssen jeden Konflikt vermeiden."], richtigeAntwort:0, erklaerung:"Die Friedenspflicht gilt für die Laufzeit des Tarifvertrags."},
+ {thema:"verbraucher", frage:"Ein 15-Jähriger kauft von seinem Taschengeld ein Videospiel für 30 €. Was gilt?", antworten:["Der Vertrag ist wirksam (Taschengeldparagraf).","Der Vertrag ist nichtig.","Der Vertrag wird erst mit 18 wirksam.","Der Händler muss vorher die Eltern anrufen."], richtigeAntwort:0, erklaerung:"§ 110 BGB: Bewirkt der Minderjährige die Leistung mit überlassenen Mitteln, ist der Vertrag wirksam."},
+ {thema:"unternehmen", frage:"Bei welcher Rechtsform haften die Gesellschafter nicht mit ihrem Privatvermögen?", antworten:["GmbH","Einzelunternehmen","OHG","GbR"], richtigeAntwort:0, erklaerung:"Bei der GmbH haftet nur das Gesellschaftsvermögen."},
+ {thema:"vwl", frage:"Welches Ziel gehört zum „magischen Viereck“ der Wirtschaftspolitik?", antworten:["Stabiles Preisniveau","Hohe Staatsverschuldung","Möglichst hohe Zinsen","Möglichst viele Importe"], richtigeAntwort:0, erklaerung:"Dazu gehören stabiles Preisniveau, hoher Beschäftigungsstand, außenwirtschaftliches Gleichgewicht und stetiges Wachstum."},
+ {thema:"weiterbildung", frage:"Welches Organ der EU wird direkt von den Bürgerinnen und Bürgern gewählt?", antworten:["Europäisches Parlament","Europäische Kommission","Europäischer Rat","Europäische Zentralbank"], richtigeAntwort:0, erklaerung:"Das Europäische Parlament wird alle fünf Jahre direkt gewählt; die Kommission wird vorgeschlagen und vom Parlament bestätigt."},
+ {thema:"nachhaltigkeit", frage:"Was beschreibt der ökologische Fußabdruck?", antworten:["Die Fläche, die nötig ist, um den Ressourcenverbrauch eines Menschen dauerhaft zu decken","Ein Gütesiegel für Bio-Lebensmittel","Eine Steuer auf Kraftstoffe","Die Zahl der Bäume in einer Stadt"], richtigeAntwort:0, erklaerung:"Je größer der Fußabdruck, desto mehr Ressourcen werden verbraucht, als die Erde nachbilden kann."}
+]},
+
+{ id:"tp-2", art:"test", termin:"Testprüfung 2", titel:"Gemischter Aufgabensatz", minuten:26, fragen:[
+ {thema:"ausbildung", situation:"Kemal Aydın beginnt seine Ausbildung im Café Sonnenseite.", frage:"Wie kann das Ausbildungsverhältnis in der Probezeit gekündigt werden?", antworten:["Jederzeit ohne Einhaltung einer Frist","Nur mit vier Wochen Frist","Nur mit Zustimmung der IHK","Gar nicht"], richtigeAntwort:0, erklaerung:"§ 22 Abs. 1 BBiG; die Kündigung muss aber schriftlich erfolgen."},
+ {thema:"ausbildung", frage:"Welche Aufgabe hat die Berufsschule im dualen System?", antworten:["Fachtheorie und allgemeinbildende Inhalte vermitteln","Ausbildungsverträge eintragen","Die Ausbildungsvergütung zahlen","Die Abschlussprüfung allein abnehmen"], richtigeAntwort:0, erklaerung:"Die Eintragung übernimmt die IHK, die Vergütung der Betrieb, die Prüfung ein Prüfungsausschuss."},
+ {thema:"arbeitsrecht", frage:"Was ist eine Abmahnung?", antworten:["Die Rüge eines Fehlverhaltens mit Androhung von Konsequenzen im Wiederholungsfall","Eine fristlose Kündigung","Eine Gehaltserhöhung","Ein Zwischenzeugnis"], richtigeAntwort:0, erklaerung:"Sie hat Hinweis-, Rüge- und Warnfunktion und geht verhaltensbedingten Kündigungen meist voraus."},
+ {thema:"arbeitsrecht", frage:"Bis zu welcher Dauer darf die tägliche Arbeitszeit Erwachsener nach dem Arbeitszeitgesetz verlängert werden?", antworten:["Auf 10 Stunden, wenn im Ausgleichszeitraum durchschnittlich 8 Stunden nicht überschritten werden","Auf 12 Stunden ohne Ausgleich","Gar nicht, 8 Stunden ohne Ausnahme","Auf 14 Stunden"], richtigeAntwort:0, erklaerung:"§ 3 ArbZG: Ausgleich innerhalb von sechs Kalendermonaten oder 24 Wochen."},
+ {thema:"schutz", frage:"Ein Erwachsener arbeitet 9,5 Stunden. Wie lange müssen seine Pausen mindestens sein?", antworten:["15 Minuten","30 Minuten","45 Minuten","60 Minuten"], richtigeAntwort:2, erklaerung:"Mehr als 9 Stunden: 45 Minuten; mehr als 6 Stunden: 30 Minuten (§ 4 ArbZG)."},
+ {thema:"entgelt", frage:"Eine Kollegin von Kemal verdient 2.500 € im Monat und erhält im Dezember ein Weihnachtsgeld von 50 % eines Monatsentgelts. Wie hoch ist ihr Dezember-Brutto?", antworten:["2.500 €","3.000 €","3.750 €","5.000 €"], richtigeAntwort:2, erklaerung:"2.500 € + 1.250 € = 3.750 €."},
+ {thema:"sozialvers", frage:"Welche Leistung zahlt die Arbeitslosenversicherung?", antworten:["Kurzarbeitergeld","Krankengeld","Pflegegeld","Witwenrente"], richtigeAntwort:0, erklaerung:"Kurzarbeitergeld wird bei vorübergehendem Arbeitsausfall von der Agentur für Arbeit gezahlt."},
+ {thema:"mitbestimmung", frage:"Was ist die Jugend- und Auszubildendenvertretung (JAV)?", antworten:["Die Interessenvertretung von Jugendlichen und Auszubildenden unter 25 im Betrieb","Ein Ausschuss der IHK","Die Schülervertretung der Berufsschule","Eine Gewerkschaft"], richtigeAntwort:0, erklaerung:"Sie wird in Betrieben mit mindestens fünf solcher Beschäftigten gewählt und arbeitet mit dem Betriebsrat zusammen."},
+ {thema:"verbraucher", frage:"Wie lange beträgt die gesetzliche Gewährleistungsfrist beim Kauf neuer Waren?", antworten:["6 Monate","1 Jahr","2 Jahre","5 Jahre"], richtigeAntwort:2, erklaerung:"§ 438 BGB; Gewährleistung ist nicht mit einer freiwilligen Garantie zu verwechseln."},
+ {thema:"unternehmen", frage:"Was ist ein Kommanditist?", antworten:["Teilhafter einer KG, der nur mit seiner Einlage haftet","Vollhafter einer KG","Geschäftsführer einer GmbH","Mitglied eines Aufsichtsrats"], richtigeAntwort:0, erklaerung:"Der Komplementär haftet unbeschränkt, der Kommanditist nur bis zur Höhe seiner Einlage."},
+ {thema:"vwl", frage:"Was versteht man unter Inflation?", antworten:["Einen anhaltenden Anstieg des allgemeinen Preisniveaus","Sinkende Preise","Steigende Arbeitslosigkeit","Wachsende Exporte"], richtigeAntwort:0, erklaerung:"Mit Inflation sinkt die Kaufkraft des Geldes."},
+ {thema:"nachhaltigkeit", frage:"Was bedeutet Nachhaltigkeit im Betrieb?", antworten:["Ökologische, ökonomische und soziale Ziele dauerhaft in Einklang bringen","Kurzfristig möglichst viel Gewinn erzielen","Nur Strom sparen","Keine Investitionen mehr tätigen"], richtigeAntwort:0, erklaerung:"Das Drei-Säulen-Modell verbindet Umwelt, Wirtschaft und Soziales."},
+ {thema:"unternehmen", frage:"Was versteht man unter Liquidität?", antworten:["Die Fähigkeit, fällige Zahlungen fristgerecht zu leisten","Den Gewinn eines Jahres","Den Wert der Immobilien","Die Zahl der Beschäftigten"], richtigeAntwort:0, erklaerung:"Ein Betrieb kann trotz Gewinn zahlungsunfähig werden, wenn ihm flüssige Mittel fehlen."}
+]},
+
+{ id:"tp-3", art:"test", termin:"Testprüfung 3", titel:"Gemischter Aufgabensatz", minuten:26, fragen:[
+ {thema:"ausbildung", situation:"Hannah Wolf wird im Seehotel Möwe zur Köchin ausgebildet.", frage:"Was regelt der Ausbildungsrahmenplan?", antworten:["Die sachliche und zeitliche Gliederung der betrieblichen Ausbildungsinhalte","Die Höhe der Vergütung","Die Zahl der Urlaubstage","Die Fächer der Berufsschule"], richtigeAntwort:0, erklaerung:"Auf seiner Grundlage erstellt der Betrieb den individuellen Ausbildungsplan."},
+ {thema:"ausbildung", frage:"Die Auszubildende Hannah besteht die Abschlussprüfung nicht. Was gilt?", antworten:["Auf ihr Verlangen verlängert sich die Ausbildung bis zur nächsten Wiederholungsprüfung, höchstens um ein Jahr.","Die Ausbildung endet ohne Wiederholungsmöglichkeit.","Sie muss die Ausbildung komplett neu beginnen.","Sie erhält den Abschluss trotzdem."], richtigeAntwort:0, erklaerung:"§ 21 Abs. 3 BBiG; die Prüfung kann zweimal wiederholt werden."},
+ {thema:"schutz", frage:"Was regelt das Arbeitsschutzgesetz vor allem?", antworten:["Sicherheit und Gesundheitsschutz der Beschäftigten bei der Arbeit","Die Höhe der Löhne","Die Kündigungsfristen","Das Urlaubsgeld"], richtigeAntwort:0, erklaerung:"Es verpflichtet den Arbeitgeber u. a. zu Gefährdungsbeurteilung und Unterweisung."},
+ {thema:"schutz", frage:"Welche Farbe haben Rettungszeichen wie „Notausgang“?", antworten:["Grün","Rot","Gelb","Blau"], richtigeAntwort:0, erklaerung:"Grün = Rettung, Rot = Verbot/Brandschutz, Gelb = Warnung, Blau = Gebot."},
+ {thema:"entgelt", frage:"Hannahs Kollegin ist 30 Jahre alt und kinderlos. Was gilt in der Pflegeversicherung?", antworten:["Sie zahlt einen Beitragszuschlag für Kinderlose.","Sie ist beitragsfrei.","Der Arbeitgeber zahlt den Beitrag allein.","Sie zahlt keinen Arbeitnehmeranteil."], richtigeAntwort:0, erklaerung:"Kinderlose ab 23 Jahren zahlen einen Zuschlag, den sie allein tragen."},
+ {thema:"entgelt", frage:"Was ist ein Minijob?", antworten:["Eine Beschäftigung mit einem Verdienst bis zur gesetzlichen Geringfügigkeitsgrenze","Jede Teilzeitstelle","Eine Berufsausbildung","Eine Beschäftigung mit über 40 Wochenstunden"], richtigeAntwort:0, erklaerung:"Die Geringfügigkeitsgrenze ist an den Mindestlohn gekoppelt und ändert sich mit ihm."},
+ {thema:"arbeitsrecht", frage:"Wie lange darf ein Arbeitsvertrag bei einer Neueinstellung ohne sachlichen Grund befristet werden?", antworten:["Bis zu zwei Jahre","Unbegrenzt","Höchstens drei Monate","Gar nicht"], richtigeAntwort:0, erklaerung:"§ 14 Abs. 2 TzBfG: bis zu zwei Jahre, innerhalb dieser Zeit höchstens dreimal verlängerbar."},
+ {thema:"mitbestimmung", frage:"Wie lange ist die regelmäßige Amtszeit eines Betriebsrats?", antworten:["2 Jahre","4 Jahre","5 Jahre","6 Jahre"], richtigeAntwort:1, erklaerung:"§ 21 BetrVG: vier Jahre."},
+ {thema:"verbraucher", frage:"Welcher Vertrag ist ein Werkvertrag?", antworten:["Ein Techniker repariert die Kühlzelle und schuldet die funktionierende Anlage.","Ein Hotel vermietet eine Wohnung an einen Koch.","Ein Nachbar leiht sich kostenlos eine Leiter.","Eine Aushilfe wird stundenweise beschäftigt."], richtigeAntwort:0, erklaerung:"Beim Werkvertrag wird ein Erfolg geschuldet, beim Dienstvertrag nur die Tätigkeit."},
+ {thema:"unternehmen", frage:"Was ist Prokura?", antworten:["Eine umfassende, im Handelsregister eingetragene Vollmacht","Ein Ausbildungsabschluss","Eine Steuerart","Eine Versicherung"], richtigeAntwort:0, erklaerung:"Prokuristen dürfen fast alle Geschäfte vornehmen – ausgenommen z. B. Grundstücksverkäufe ohne besondere Befugnis."},
+ {thema:"vwl", frage:"Was passiert in der Regel, wenn bei gleichem Angebot die Nachfrage steigt?", antworten:["Der Preis steigt.","Der Preis sinkt.","Der Preis bleibt gleich.","Das Angebot verschwindet."], richtigeAntwort:0, erklaerung:"Nach dem Marktmodell führt Nachfrageüberhang zu steigenden Preisen."},
+ {thema:"mitbestimmung", frage:"Was ist eine Aussperrung?", antworten:["Ein Arbeitskampfmittel der Arbeitgeber: Beschäftigte werden vorübergehend ohne Entgelt von der Arbeit ausgeschlossen","Eine fristlose Kündigung","Ein Hausverbot für Gäste","Ein Streik der Gewerkschaft"], richtigeAntwort:0, erklaerung:"Die Aussperrung ist die Antwort der Arbeitgeberseite auf einen Streik."},
+ {thema:"entgelt", frage:"Eine Teilzeitkraft arbeitet 20 statt 40 Wochenstunden. Das Vollzeitentgelt beträgt 2.640 €. Wie hoch ist ihr Monatsentgelt?", antworten:["1.100 €","1.320 €","1.540 €","2.640 €"], richtigeAntwort:1, erklaerung:"Teilzeitkräfte erhalten das Entgelt anteilig: 2.640 € × 20/40 = 1.320 € (Diskriminierungsverbot nach § 4 TzBfG)."}
+]},
+
+{ id:"tp-4", art:"test", termin:"Testprüfung 4", titel:"Gemischter Aufgabensatz", minuten:26, fragen:[
+ {thema:"ausbildung", situation:"Finn Schuster ist Auszubildender in der Eventlocation Alte Mühle GmbH.", frage:"Wer überwacht die Durchführung der Berufsausbildung?", antworten:["Die zuständige Stelle mit ihren Ausbildungsberatern","Die Polizei","Der Arbeitgeberverband","Das Finanzamt"], richtigeAntwort:0, erklaerung:"§ 76 BBiG: Die zuständige Stelle berät und überwacht."},
+ {thema:"ausbildung", frage:"Kann der Betrieb den Auszubildenden Finn nach der Probezeit ordentlich kündigen?", antworten:["Nein, nur fristlos aus wichtigem Grund","Ja, mit vier Wochen Frist ohne Grund","Ja, mit zwei Wochen Frist","Ja, wenn die Eltern zustimmen"], richtigeAntwort:0, erklaerung:"Nach der Probezeit kann der Betrieb nur aus wichtigem Grund kündigen (§ 22 Abs. 2 BBiG)."},
+ {thema:"arbeitsrecht", frage:"Wann gilt das Kündigungsschutzgesetz?", antworten:["In Betrieben mit mehr als zehn Arbeitnehmern nach sechs Monaten Betriebszugehörigkeit","Ab dem ersten Tag in jedem Betrieb","Nur für Auszubildende","Nur in Betrieben mit Betriebsrat"], richtigeAntwort:0, erklaerung:"§§ 1 und 23 KSchG; dann braucht eine Kündigung einen personen-, verhaltens- oder betriebsbedingten Grund."},
+ {thema:"schutz", frage:"Was ist eine Gefährdungsbeurteilung?", antworten:["Die systematische Ermittlung und Bewertung von Gefahren am Arbeitsplatz","Ein Arbeitszeugnis","Eine Brandschutzübung","Eine Gesundheitsprüfung für Gäste"], richtigeAntwort:0, erklaerung:"Sie ist Pflicht des Arbeitgebers (§ 5 ArbSchG) und Grundlage für Schutzmaßnahmen."},
+ {thema:"entgelt", frage:"Welche Steuerklasse haben ledige Arbeitnehmer ohne Kinder?", antworten:["I","II","III","V"], richtigeAntwort:0, erklaerung:"Klasse II gilt für Alleinerziehende, III und V für Verheiratete."},
+ {thema:"entgelt", frage:"Finns Kollege verdient 2.800 € brutto; die gesetzlichen Abzüge betragen insgesamt 31 %. Wie hoch ist sein Netto?", antworten:["868 €","1.932 €","1.960 €","2.069 €"], richtigeAntwort:1, erklaerung:"2.800 € × 0,69 = 1.932 €."},
+ {thema:"sozialvers", frage:"Was bedeutet das Umlageverfahren der Rentenversicherung?", antworten:["Die Beiträge der heutigen Beschäftigten finanzieren die heutigen Renten.","Jeder spart seine eigene Rente an.","Der Staat zahlt alle Renten allein aus Steuern.","Arbeitgeber zahlen die Renten direkt aus."], richtigeAntwort:0, erklaerung:"Man spricht auch vom Generationenvertrag."},
+ {thema:"mitbestimmung", frage:"Was regelt ein Manteltarifvertrag?", antworten:["Längerfristig allgemeine Arbeitsbedingungen wie Urlaub, Arbeitszeit und Kündigungsfristen","Nur die Lohnhöhe für ein Jahr","Vereinbarungen zwischen Betriebsrat und Arbeitgeber","Den einzelnen Arbeitsvertrag"], richtigeAntwort:0, erklaerung:"Die Entgelthöhe steht im Lohn- bzw. Entgelttarifvertrag."},
+ {thema:"verbraucher", frage:"Wodurch kommt ein Kaufvertrag zustande?", antworten:["Durch zwei übereinstimmende Willenserklärungen (Antrag und Annahme)","Durch die Bezahlung","Durch die Lieferung","Durch eine Anfrage"], richtigeAntwort:0, erklaerung:"Zahlung und Lieferung sind Erfüllung, nicht Abschluss des Vertrags."},
+ {thema:"unternehmen", frage:"Was zeigt die Bilanz eines Unternehmens?", antworten:["Vermögen (Aktiva) und Kapital (Passiva) zu einem Stichtag","Alle Umsätze eines Tages","Die Personalplanung","Die aktuelle Speisekarte"], richtigeAntwort:0, erklaerung:"Beide Seiten der Bilanz sind immer gleich groß."},
+ {thema:"vwl", frage:"Welche Phase folgt im Konjunkturzyklus auf den Boom?", antworten:["Abschwung","Aufschwung","Tiefstand","Erholung"], richtigeAntwort:0, erklaerung:"Zyklus: Aufschwung – Boom – Abschwung – Tiefstand."},
+ {thema:"weiterbildung", frage:"Was ermöglicht das Programm Erasmus+ Auszubildenden?", antworten:["Geförderte Lern- und Praktikumsaufenthalte im europäischen Ausland","Eine kostenlose Meisterprüfung","Steuerfreiheit im Ausland","Eine automatisch verkürzte Ausbildung"], richtigeAntwort:0, erklaerung:"Auslandsaufenthalte können bis zu einem Viertel der Ausbildungszeit dauern (§ 2 Abs. 3 BBiG)."},
+ {thema:"verbraucher", frage:"Was gibt der effektive Jahreszins eines Kredits an?", antworten:["Die tatsächlichen jährlichen Gesamtkosten des Kredits in Prozent","Den Zins für Sparguthaben","Die Inflationsrate","Den Leitzins der EZB"], richtigeAntwort:0, erklaerung:"Er enthält neben dem Sollzins auch Gebühren und macht Kreditangebote vergleichbar."}
+]},
+
+{ id:"tp-5", art:"test", termin:"Testprüfung 5", titel:"Gemischter Aufgabensatz", minuten:26, fragen:[
+ {thema:"ausbildung", situation:"Ayla Demir beginnt ihre Ausbildung im Restaurant Grünspan.", frage:"Welche Aussage zur Ausbildungsvergütung stimmt?", antworten:["Sie muss angemessen sein und mit jedem Ausbildungsjahr steigen.","Sie ist freiwillig.","Sie wird erst nach der Probezeit gezahlt.","Sie ist in allen Berufen gleich hoch."], richtigeAntwort:0, erklaerung:"§ 17 BBiG; die gesetzliche Mindestvergütung darf nicht unterschritten werden."},
+ {thema:"schutz", frage:"An wie vielen Tagen pro Woche dürfen Jugendliche höchstens beschäftigt werden?", antworten:["4","5","6","7"], richtigeAntwort:1, erklaerung:"Fünf-Tage-Woche (§ 15 JArbSchG)."},
+ {thema:"schutz", frage:"Was regelt das Jugendschutzgesetz in der Gastronomie?", antworten:["Die Abgabe von Alkohol und Tabak an Kinder und Jugendliche","Die Arbeitszeit jugendlicher Auszubildender","Die Ausbildungsvergütung","Die Probezeit"], richtigeAntwort:0, erklaerung:"Die Arbeitszeit Jugendlicher regelt dagegen das Jugendarbeitsschutzgesetz."},
+ {thema:"schutz", frage:"Ab welchem Alter dürfen Bier und Wein an Jugendliche ohne Begleitung der Eltern abgegeben werden?", antworten:["14","16","18","21"], richtigeAntwort:1, erklaerung:"Ab 16; Spirituosen und spirituosenhaltige Getränke erst ab 18 (§ 9 JuSchG)."},
+ {thema:"entgelt", frage:"Wie unterscheiden sich Brutto- und Nettoentgelt?", antworten:["Netto ist das Brutto abzüglich Steuern und Arbeitnehmeranteilen zur Sozialversicherung.","Netto ist Brutto plus Zuschläge.","Brutto ist der Auszahlungsbetrag.","Es gibt keinen Unterschied."], richtigeAntwort:0, erklaerung:"Vom Netto können noch weitere Beträge wie VL-Sparraten abgehen, bevor überwiesen wird."},
+ {thema:"sozialvers", frage:"Wer ist Träger der gesetzlichen Rentenversicherung?", antworten:["Die Deutsche Rentenversicherung","Die Berufsgenossenschaft","Die Agentur für Arbeit","Die Krankenkasse"], richtigeAntwort:0, erklaerung:"Sie zahlt Alters-, Erwerbsminderungs- und Hinterbliebenenrenten."},
+ {thema:"arbeitsrecht", frage:"Was ist der gesetzliche Mindestlohn?", antworten:["Eine gesetzlich festgelegte Lohnuntergrenze je Stunde","Der Tariflohn einer Branche","Der Lohn während der Probezeit","Die Ausbildungsvergütung"], richtigeAntwort:0, erklaerung:"Er gilt für fast alle volljährigen Beschäftigten, nicht aber für Auszubildende."},
+ {thema:"mitbestimmung", frage:"Was ist eine Betriebsvereinbarung?", antworten:["Eine Vereinbarung zwischen Betriebsrat und Arbeitgeber","Ein Vertrag zwischen Gewerkschaft und Arbeitgeberverband","Ein Arbeitsvertrag","Ein Gesetz"], richtigeAntwort:0, erklaerung:"Sie gilt für alle Beschäftigten des Betriebs, z. B. zu Dienstplanregeln."},
+ {thema:"verbraucher", frage:"Was bedeutet Eigentumsvorbehalt?", antworten:["Die Ware bleibt bis zur vollständigen Bezahlung Eigentum des Verkäufers.","Der Käufer wird sofort Eigentümer.","Der Verkäufer darf die Ware jederzeit zurückkaufen.","Der Käufer darf die Ware nie weiterverkaufen."], richtigeAntwort:0, erklaerung:"Besitzer ist der Käufer sofort, Eigentümer erst nach Zahlung."},
+ {thema:"unternehmen", frage:"Was kennzeichnet ein Franchise-System?", antworten:["Ein Unternehmer nutzt gegen Gebühr Marke und Konzept eines anderen Unternehmens.","Eine staatliche Förderung für Gründer","Eine Rechtsform wie die GmbH","Ein Steuerverfahren"], richtigeAntwort:0, erklaerung:"Viele Systemgastronomie-Betriebe arbeiten so: Franchisenehmer zahlen Gebühren an den Franchisegeber."},
+ {thema:"vwl", frage:"Welche Aufgabe hat die Europäische Zentralbank vorrangig?", antworten:["Preisniveaustabilität im Euroraum sichern","Steuern festlegen","Löhne verhandeln","Arbeitslosengeld zahlen"], richtigeAntwort:0, erklaerung:"Als Ziel gilt eine Inflationsrate von 2 % auf mittlere Sicht."},
+ {thema:"nachhaltigkeit", frage:"Welche Maßnahme vermeidet Lebensmittelabfälle?", antworten:["Portionsgrößen anpassen und Reste kreativ verwerten","Größere Vorräte bestellen","Buffets bis zum Schluss vollständig auffüllen","Ware mit erreichtem MHD sofort entsorgen"], richtigeAntwort:0, erklaerung:"Ware nach Ablauf des MHD ist oft noch einwandfrei und muss nur geprüft werden."},
+ {thema:"vwl", frage:"Was ist ein Kartell?", antworten:["Eine Absprache selbstständiger Unternehmen, um den Wettbewerb zu beschränken","Ein Zusammenschluss von Gewerkschaften","Eine staatliche Behörde","Eine Form der GmbH"], richtigeAntwort:0, erklaerung:"Preis- und Gebietsabsprachen sind grundsätzlich verboten und werden vom Bundeskartellamt verfolgt."}
+]}
+];
+
+/* =====================================================================
+   PROGRAMMLOGIK (keine Änderungen nötig, um Inhalte zu ergänzen)
+   ===================================================================== */
+const $ = s => document.querySelector(s);
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  clear(){ try{ Object.keys(localStorage).filter(k=>k.startsWith("pt_")).forEach(k=>localStorage.removeItem(k)); }catch(e){} }
+};
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* Automatische Themenerkennung für Aufgaben ohne Feld "thema" */
+function erkenneThema(q){
+  const text=(q.frage+" "+(q.situation||"")+" "+q.antworten.join(" ")).toLowerCase();
+  let best="vwl", score=0;
+  for(const [id,t] of Object.entries(THEMEN)){
+    const s=t.stichworte.reduce((n,w)=>n+(text.includes(w)?1:0),0);
+    if(s>score){score=s;best=id;}
+  }
+  return best;
+}
+PRUEFUNGEN.forEach(p=>p.fragen.forEach(q=>{ q.thema = q.thema && THEMEN[q.thema] ? q.thema : erkenneThema(q); q._quelle = p.termin + (p.art==="test"?"":" "+p.titel.split(" ")[0]); }));
+
+/* ---------- Startseite aufbauen ---------- */
+const word="WiSo";
+$(".boxword").innerHTML=[...word].map(c=>`<span aria-hidden="true">${c}</span>`).join("");
+const echteFragen=PRUEFUNGEN.filter(p=>!p.beispiel).flatMap(p=>p.fragen);
+const themenAktiv=Object.keys(THEMEN).filter(id=>echteFragen.some(q=>q.thema===id));
+$("#stats").innerHTML=`<div><b>${echteFragen.length}</b>Aufgaben</div><div><b>${PRUEFUNGEN.filter(p=>!p.beispiel).length}</b>Prüfungen</div><div><b>${themenAktiv.length}</b>Themen</div>`;
+
+function bestText(id){ const b=store.get("pt_"+id); return b!==null?`Bestwert ${b} %`:""; }
+function renderLists(){
+  ["abschluss","test"].forEach(art=>{
+    const el=$("#list-"+art), items=PRUEFUNGEN.filter(p=>p.art===art);
+    if(!items.length){ el.innerHTML=`<div class="empty">Noch keine Aufgabensätze vorhanden.</div>`; return; }
+    el.innerHTML=items.map(p=>`<button class="row${p.beispiel?" example":""}" data-exam="${p.id}">
+      <span class="when">${esc(p.termin)}</span>
+      <span class="what"><strong>${esc(p.titel)}${p.beispiel?'<span class="badge">Beispiel</span>':""}</strong><small>${p.fragen.length} Aufgaben, ca. ${p.minuten} Minuten</small></span>
+      <span class="best">${bestText(p.id)}</span></button>`).join("");
+  });
+  $("#list-themen").innerHTML=themenAktiv.map(id=>{
+    const n=echteFragen.filter(q=>q.thema===id).length, b=store.get("pt_thema-"+id);
+    const dots=Array.from({length:Math.min(n,30)},(_,i)=>`<i class="${b!==null && i< Math.round(Math.min(n,30)*b/100)?"f":""}"></i>`).join("");
+    return `<button class="theme" data-theme="${id}"><strong>${esc(THEMEN[id].name)}</strong><small>${esc(THEMEN[id].info)}<br>${n} Aufgaben${b!==null?`, Bestwert ${b} %`:""}</small><span class="count" aria-hidden="true">${dots}</span></button>`;
+  }).join("");
+}
+let aktiverTab="abschluss";
+function showTab(t){
+  aktiverTab=t;
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
+  document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("hidden",p.dataset.panel!==t));
+}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+document.addEventListener("click",e=>{
+  const ex=e.target.closest("[data-exam]"); if(ex){ const p=PRUEFUNGEN.find(x=>x.id===ex.dataset.exam); start({key:p.id,titel:p.termin,unter:p.titel,fragen:p.fragen,mischen:false,quelleZeigen:false}); }
+  const th=e.target.closest("[data-theme]"); if(th){ const id=th.dataset.theme; start({key:"thema-"+id,titel:THEMEN[id].name,unter:"Thementraining",fragen:echteFragen.filter(q=>q.thema===id),mischen:true,quelleZeigen:true}); }
+});
+$("#reset").addEventListener("click",()=>{ if(confirm("Alle gespeicherten Bestwerte löschen?")){ store.clear(); renderLists(); } });
+
+/* ---------- Quiz ---------- */
+let S=null, tick=null;
+function view(id){ ["home","quiz","result"].forEach(v=>$("#"+v).classList.toggle("hidden",v!==id)); window.scrollTo(0,0); }
+function start(cfg){
+  const fragen=(cfg.mischen?shuffle(cfg.fragen):cfg.fragen.slice()).map(q=>({q,order:shuffle(q.antworten.map((_,i)=>i)),status:null,fehl:0}));
+  S={...cfg,liste:fragen,i:0,t0:Date.now()};
+  $("#qtitle").innerHTML=`${esc(cfg.titel)}<small>${esc(cfg.unter)}</small>`;
+  clearInterval(tick); tick=setInterval(()=>{ const s=Math.floor((Date.now()-S.t0)/1000); $("#timer").textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`; },1000);
+  view("quiz"); renderQ();
+}
+function renderSheet(){
+  $("#sheet").innerHTML=S.liste.map((f,k)=>`<span class="${f.status==="ok"?"ok":f.status==="retry"?"retry":""}${k===S.i?" cur":""}" title="Aufgabe ${k+1}">${k+1}</span>`).join("");
+}
+function renderQ(){
+  const f=S.liste[S.i], q=f.q;
+  renderSheet();
+  $("#qnum").innerHTML=`${S.i+1}. Aufgabe von ${S.liste.length}${S.quelleZeigen?` <span class="src">aus ${esc(q._quelle)}</span>`:""}`;
+  const sit=$("#situation");
+  if(q.situation){ sit.innerHTML=`<b>Situation</b>${esc(q.situation)}`; sit.classList.remove("hidden"); } else sit.classList.add("hidden");
+  $("#question").textContent=q.frage;
+  $("#opts").innerHTML=f.order.map((oi,k)=>`<button class="opt" data-oi="${oi}"><span class="k">${k+1}</span><span class="t">${esc(q.antworten[oi])}</span></button>`).join("");
+  const fb=$("#feedback"); fb.className="feedback"; fb.innerHTML="";
+  $("#next").disabled=true; $("#next").textContent=S.i===S.liste.length-1?"Auswertung":"Weiter";
+  $("#skip").classList.remove("hidden");
+  if(f.status==="ok") markSolved(f,false);
+  $("#opts").querySelectorAll(".opt").forEach(b=>b.addEventListener("click",()=>answer(b)));
+}
+function answer(btn){
+  const f=S.liste[S.i]; if(f.solved) return;
+  const oi=+btn.dataset.oi, fb=$("#feedback");
+  if(oi===f.q.richtigeAntwort){
+    if(f.fehl===0) f.status="ok"; else f.status="retry";
+    markSolved(f,true);
+  }else{
+    f.fehl++; f.status="retry";
+    btn.classList.add("wrong","anim"); btn.disabled=true;
+    fb.className="feedback show bad"; fb.textContent="Nochmal probieren.";
+    renderSheet();
+  }
+}
+function markSolved(f,fresh){
+  f.solved=true;
+  $("#opts").querySelectorAll(".opt").forEach(b=>{ b.disabled=true; if(+b.dataset.oi===f.q.richtigeAntwort) b.classList.add("right"); });
+  const fb=$("#feedback"); fb.className="feedback show ok";
+  fb.innerHTML=`<strong>Richtig.</strong>${esc(f.q.erklaerung)}`;
+  $("#next").disabled=false; $("#skip").classList.add("hidden");
+  if(fresh) renderSheet();
+  $("#next").focus({preventScroll:true});
+}
+function next(){ if(S.i<S.liste.length-1){ S.i++; renderQ(); } else finish(); }
+$("#next").addEventListener("click",next);
+$("#skip").addEventListener("click",()=>{ const f=S.liste[S.i]; if(!f.solved){ f.status="retry"; f.fehl=Math.max(f.fehl,1); } next(); });
+$("#quit").addEventListener("click",()=>{ if(confirm("Prüfung abbrechen und zur Startseite?")){ clearInterval(tick); renderLists(); view("home"); } });
+document.addEventListener("keydown",e=>{
+  if($("#quiz").classList.contains("hidden")) return;
+  const n=parseInt(e.key,10);
+  if(n>=1&&n<=9){ const b=$("#opts").querySelectorAll(".opt")[n-1]; if(b&&!b.disabled) answer(b); }
+  if(e.key==="Enter" && !$("#next").disabled && document.activeElement.tagName!=="BUTTON"){ e.preventDefault(); next(); }
+});
+
+/* ---------- Auswertung ---------- */
+function note(p){ return p>=92?"Sehr gut (1)":p>=81?"Gut (2)":p>=67?"Befriedigend (3)":p>=50?"Ausreichend (4)":p>=30?"Mangelhaft (5)":"Ungenügend (6)"; }
+function finish(){
+  clearInterval(tick);
+  const n=S.liste.length, ok=S.liste.filter(f=>f.status==="ok").length, pct=Math.round(ok/n*100);
+  const s=Math.floor((Date.now()-S.t0)/1000);
+  const alt=store.get("pt_"+S.key); if(alt===null||pct>+alt) store.set("pt_"+S.key,pct);
+  $("#rtitle").textContent=`${S.titel} – ${S.unter}`;
+  $("#rpct").textContent=pct+" %";
+  $("#rgrade").textContent=note(pct)+" nach IHK-Notenschlüssel";
+  $("#rdetail").textContent=`${ok} von ${n} Aufgaben im ersten Versuch richtig. Bearbeitungszeit ${Math.floor(s/60)} Min. ${s%60} Sek.`;
+  $("#wrongonly").classList.toggle("hidden",ok===n);
+  view("result");
+}
+$("#again").addEventListener("click",()=>start({...S,fragen:S.liste.map(f=>f.q)}));
+$("#wrongonly").addEventListener("click",()=>{ const f=S.liste.filter(x=>x.status!=="ok").map(x=>x.q); start({...S,key:S.key+"-fehler",unter:"Fehler wiederholen",fragen:f}); });
+$("#other").addEventListener("click",()=>{ renderLists(); view("home"); showTab(aktiverTab); document.querySelector(".tabs").scrollIntoView({block:"start"}); });
+$("#home-btn").addEventListener("click",()=>{ renderLists(); view("home"); });
+
+renderLists();
+</script>
+</body>
+</html>
